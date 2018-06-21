@@ -4,13 +4,15 @@ import './App.css';
 import { GoogleApiWrapper } from 'google-maps-react'
 // import child component
 import Map from './Map'
+import List from './List'
 
 class App extends Component {
+
   render() {
     return (
       <div>
-        <h1> Google Maps API + React </h1> 
         <Map google={this.props.google} />
+        <List />
       </div>
     );
   }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-export default class MapContainer extends Component {
+export default class Map extends Component {
 
-  componentDidUpdate() {
-    this.loadMap(); // call loadMap function to load the google map
+  componentDidMount() {
+    this.loadMap(); /* call loadMap function to load the google map */
   }
 
   loadMap() {
@@ -28,8 +28,9 @@ export default class MapContainer extends Component {
 
   render() {
     const style = { // MUST specify dimensions of the Google map or it will not work. Also works best when style is specified inside the render function and created as an object
-      width: '90vw', // 90vw basically means take up 90% of the width screen. px also works.
-      height: '75vh' // 75vh similarly will take up roughly 75% of the height of the screen. px also works.
+      width: '100vw', // 90vw basically means take up 90% of the width screen. px also works.
+      height: '100vh', // 75vh similarly will take up roughly 75% of the height of the screen. px also works.
+      zIndex: '5'
     }
 
     return (
