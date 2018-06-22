@@ -26,3 +26,44 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+#list-container {
+  position: absolute;
+  width: 20vw;
+  height: 100vh;
+  z-index: 99;
+  background-color: rgba(0,0,0,01);
+  color: white;
+  padding: 8px;
+}
+
+#map-container {
+  width: 79vw;
+  height: 100vh;
+  position: absolute;
+  right: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  #list-container {
+    width: 35vw;
+  }
+
+  #map-container {
+    width: 65vw;
+  }
+}
+
+@media screen and (max-width: 514px) {
+  #list-container {
+    width: 100vw;
+    height: 40vh;
+    bottom: 0;
+    overflow: scroll;
+  }
+
+  #map-container {
+    width: 100vw;
+    height: 59vh;
+  }
+}

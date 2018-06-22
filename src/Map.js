@@ -23,18 +23,20 @@ export default class Map extends Component {
 
       this.map = new maps.Map(node, mapConfig); // creates a new Google map on the specified node (ref='map') with the specified configuration set above.
 
+      const singleLatLng = {lat: 40.74135, lng: -73.99802};
+      const marker = new maps.Marker({
+          map: this.map,
+          title: 'My Marker',
+          position: singleLatLng,
+          id: 1
+      })
     }
   }
 
   render() {
-    const style = { // MUST specify dimensions of the Google map or it will not work. Also works best when style is specified inside the render function and created as an object
-      width: '100vw', // 90vw basically means take up 90% of the width screen. px also works.
-      height: '100vh', // 75vh similarly will take up roughly 75% of the height of the screen. px also works.
-      zIndex: '5'
-    }
 
     return (
-      <div ref="map" style={style}>
+      <div id="map-container" ref="map">
         loading map...
       </div>
     )

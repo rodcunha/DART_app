@@ -9,9 +9,10 @@ import List from './List'
 class App extends Component {
 
   render() {
+
     return (
       <div>
-        <Map google={this.props.google} />
+        <Map google={this.props.google}/>
         <List />
       </div>
     );
