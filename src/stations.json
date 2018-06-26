@@ -1,88 +1,88 @@
 {
-  "dartStations":  [{
-    "Bray" : {
+  "dartStations":  [
+    {
       "id": 1,
       "name": "Bray Dart Station",
       "lat": 53.204339,
       "lng": -6.100885
     },
-    "Greystones": {
+    {
       "id": 2,
       "name": "Greystones Dart Station",
       "lat": 53.144078,
-      "long": -6.061016
+      "lng": -6.061016
     },
-    "Dalkey": {
+    {
       "id": 3,
       "name": "Dalkey Dart Station",
       "lat": 53.275787,
-      "long": -6.103313
+      "lng": -6.103313
     },
-    "Shankill": {
+    {
       "id": 4,
       "name": "Shankill Dart Station",
       "lat": 53.236502,
-      "long": -6.117107
+      "lng": -6.117107
     },
-    "Landsdowne": {
+    {
       "id": 5,
       "name": "Landsdowne Road Dart Station",
       "lat": 53.333816,
-      "long": -6.228956
+      "lng": -6.228956
     },
-    "Killiney": {
+    {
       "id": 6,
       "name": "Killiney Street Dart Station",
       "lat": 53.255730,
-      "long": -6.113117
+      "lng": -6.113117
     },
-    "Pearse": {
+    {
       "id": 7,
       "name": "Pearse Street Dart Station",
       "lat": 53.343327,
-      "long": -6.248021
+      "lng": -6.248021
     },
-    "Tara": {
+    {
       "id": 8,
       "name": "Tara Street Dart Station",
       "lat": 53.347088,
-      "long": -6.254264
+      "lng": -6.254264
     },
-    "Connolly": {
+    {
       "id": 9,
       "name": "Connolly Dart Station",
       "lat": 53.350911,
-      "long": -6.249982
+      "lng": -6.249982
     },
-    "Malahide": {
+    {
       "id": 10,
       "name": "Malahide Dart Station",
       "lat": 53.450739,
-      "long": -6.156490
+      "lng": -6.156490
     },
-    "Sandymount": {
+    {
       "id": 11,
       "name": "Sandymount Dart Station",
       "lat": 53.327972,
-      "long": -6.220918
+      "lng": -6.220918
     },
-    "Dun Laoghaire": {
+    {
       "id": 12,
       "name": "Dun Laoghaire Dart Station",
       "lat": 53.294893,
-      "long": -6.134482
+      "lng": -6.134482
     },
-    "Docklands": {
+    {
       "id": 13,
       "name": "Docklands Dart Station",
       "lat": 53.350654,
-      "long": -6.239376
+      "lng": -6.239376
     },
-    "Clontarf": {
+    {
       "id": 14,
       "name": "Clontarf Road Dart Station",
       "lat": 53.363051,
-      "long": -6.226845
+      "lng": -6.226845
     }
-  }]
+  ]
 }

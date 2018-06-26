@@ -1,25 +1,16 @@
 import React, { Component } from 'react';
-import {Map} from 'google-maps-react';
-import propTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import Data from './stations.json'
 
 const stations = Data.dartStations;
 
-export default class MapComponent extends Component {
-  state = {
-    markers: []
-  }
+export default class Map extends Component {
 
   componentDidMount() {
     this.loadMap(); /* call loadMap function to load the google map */
+
+      console.log(stations)
   }
-
-  componentDidUpdate() {
-
-  }
-
-
 
   loadMap() {
     if (this.props && this.props.google) { // checks to make sure that props have been passed
@@ -30,28 +21,23 @@ export default class MapComponent extends Component {
       const node = ReactDOM.findDOMNode(mapRef); // finds the 'map' div in the React DOM, names it node
 
       const mapConfig = Object.assign({}, {
-        center: {lat: 53.322299, lng: -6.142332}, // sets center of google map to Dublin
-        zoom: 10, // sets zoom for the map
-        mapTypeId: 'hybrid' // optional main map layer. Terrain, satellite, hybrid or roadmap
+        center: {lat: 40.7485722, lng: -74.0068633}, // sets center of google map to NYC.
+        zoom: 11, // sets zoom. Lower numbers are zoomed further out.
+        mapTypeId: 'roadmap' // optional main map layer. Terrain, satellite, hybrid or roadmap--if unspecified, defaults to roadmap.
       })
 
       this.map = new maps.Map(node, mapConfig); // creates a new Google map on the specified node (ref='map') with the specified configuration set above.
 
-      for (let i =0; i < stations.length; i++ ) {
-        const position = {lat: stations[i].lat, lng: stations[i].lng};
-        const title = stations[i].name;
+      const singleLatLng = {lat: 40.74135, lng: -73.99802};
+      const marker = stations.map( elem => {
+        elem =  new maps.Marker({
+                  map: this.map,
+                  title: elem.name,
+                  position: { lat: elem.lat, lng: elem.lng},
+                  id: 1
+         })
+      })
 
-        const marker = new maps.Marker({
-          map: this.map,
-          position: position,
-          title: title,
-          animation: maps.Animation.DROP,
-          id: i
-        })
-        this.setState( () => {
-          this.state.markers.push(marker);
-        });
-      }
     }
   }
 
@@ -63,8 +49,4 @@ export default class MapComponent extends Component {
       </div>
     )
   }
-}
-
-Map.propTypes = {
-  google: propTypes.object.isRequired
 }
