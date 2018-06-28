@@ -1,20 +1,6 @@
 import React, {Component} from 'react'
 
 class SearchBar extends Component {
-  state = {
-    query: ''
-  }
-
-  updateQuery = (e) => {
-   const query = e;
-
-  if (query.length >= 0) {
-    this.setState({ query })
-    } else {
-      this.setState({ result: [] })
-    }
-  }
-
 
   render() {
       const styles = {
@@ -29,7 +15,7 @@ class SearchBar extends Component {
 
     return(
       <div id="searchbar-container">
-        <input type="text" placeholder="Search your Place" style={styles} onChange={e => this.updateQuery(e.target.value)} value={this.state.query} />
+        <input type="text" placeholder="Search your Place" style={styles} onChange={e => this.props.updateQuery(e.target.value)} value={this.props.query} />
       </div>
     )
   }
