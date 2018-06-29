@@ -13,8 +13,7 @@ const stations = Data.dartStations;
 class App extends Component {
   state = {
     query: '',
-    markers: [],
-    listOfPlaces: []
+    places: []
   }
 
   updateQuery = (e) => {
@@ -29,12 +28,11 @@ class App extends Component {
 
   componentDidMount() {
     this.loadMap(); /* call loadMap function to load the google map */
-
-    console.log(this.state.listOfPlaces)
+  //  console.log(this.state.places)
   }
 
   componentDidUpdate() {
-        this.showlistItems();
+  //  console.log(this.state.places)
   }
 
   loadMap() {
@@ -66,15 +64,17 @@ class App extends Component {
           animation: maps.Animation.DROP,
           id: i
         })
-        this.setState( () => {
-          this.state.markers.push(marker);
-        })
+
+        this.state.places.push(marker);
+
+
         marker.addListener('click', () => {
-          populateInfoWindow(this, largeInfoWindow);
+          populateInfoWindow(marker, largeInfoWindow);
         })
       }
   /* this function will populate the info window with the information we pass from each marker */
   function populateInfoWindow(marker, infoWindow) {
+    console.log(marker)
           if (infoWindow.marker !== marker) {
               infoWindow.marker = marker;
               infoWindow.setContent(`<div> ${marker.title} </div>`);
@@ -89,15 +89,6 @@ class App extends Component {
   }
 
 
-  showlistItems() {
-      this.setState( () => {
-        listOfPlaces: this.state.markers.map( e => {
-            listOfPlaces: e.title
-        })
-      })
-  }
-
-
   render() {
 
     return (
@@ -105,7 +96,7 @@ class App extends Component {
         <div id="map-container" ref="map">
           loading map...
         </div>
-        <List query={this.state.query} places={this.state.listOfPlaces} updateQuery={this.updateQuery} />
+        <List query={this.state.query} places={this.state.places} updateQuery={this.updateQuery} />
       </div>
     );
   }
