@@ -9,6 +9,7 @@ import Data from './stations.json';
 import List from './List';
 
 const stations = Data.dartStations;
+let markers = [];
 
 class App extends Component {
   state = {
@@ -28,11 +29,11 @@ class App extends Component {
 
   componentDidMount() {
     this.loadMap(); /* call loadMap function to load the google map */
-  //  console.log(this.state.places)
+    console.log(this.state.places)
   }
 
   componentDidUpdate() {
-  //  console.log(this.state.places)
+
   }
 
   loadMap() {
@@ -65,23 +66,24 @@ class App extends Component {
           id: i
         })
 
-        this.state.places.push(marker);
-
+        markers.push(marker);
 
         marker.addListener('click', () => {
           populateInfoWindow(marker, largeInfoWindow);
         })
+
       }
+      console.log(markers)
+      this.setState({places: markers})
   /* this function will populate the info window with the information we pass from each marker */
   function populateInfoWindow(marker, infoWindow) {
-    console.log(marker)
           if (infoWindow.marker !== marker) {
               infoWindow.marker = marker;
               infoWindow.setContent(`<div> ${marker.title} </div>`);
               infoWindow.open(map, marker);
               // clear the marker information when the infoWindow is closed
               infoWindow.addListener('closeclick', () => {
-              infoWindow.setMarker(null);
+              infoWindow.setContent(null);
             })
           }
         }

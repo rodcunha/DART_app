@@ -27,6 +27,8 @@
   to { transform: rotate(360deg); }
 }
 
+/* List Styles */
+
 #list-container {
   position: absolute;
   width: 20vw;
@@ -37,12 +39,31 @@
   padding: 8px;
 }
 
+.list--item {
+  background: #fff;
+  border-left: 5px solid transparent;
+  margin: 0;
+  overflow: hidden;
+  padding: 5px .5%;
+  position: relative;
+  width: auto;
+}
+
+.item--content {
+  margin: 0;
+  padding: 20px;
+}
+
+/* Map Styles */
+
 #map-container {
   width: 79vw;
   height: 100vh;
   position: absolute;
   right: 0;
 }
+
+/* Responsive Styles */
 
 @media screen and (max-width: 1024px) {
   #list-container {
