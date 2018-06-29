@@ -9,12 +9,11 @@ import Data from './stations.json';
 import List from './List';
 
 const stations = Data.dartStations;
-let markers = [];
 
 class App extends Component {
   state = {
     query: '',
-    places: []
+    places: stations
   }
 
   updateQuery = (e) => {
@@ -66,15 +65,10 @@ class App extends Component {
           id: i
         })
 
-        markers.push(marker);
-
         marker.addListener('click', () => {
           populateInfoWindow(marker, largeInfoWindow);
         })
-
       }
-      console.log(markers)
-      this.setState({places: markers})
   /* this function will populate the info window with the information we pass from each marker */
   function populateInfoWindow(marker, infoWindow) {
           if (infoWindow.marker !== marker) {
