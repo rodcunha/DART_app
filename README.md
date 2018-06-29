@@ -18,6 +18,15 @@ The app will be responsive across a multitude of different devices ensuring a co
 
 The app will feature the usage of a service worker to cache visited pages and make these available offline.
 
+## Dependencies (packages)
+
+- PropTypes
+- Google-Maps-React
+- Sort-By
+- Escape String Regexp
+
+You will need to use npm install to install all of the above packages.
+
 ## Contributing
 
 If you have ideas on how to improve the app and would like to contribute to make it better, see CONTRIBUTING.md

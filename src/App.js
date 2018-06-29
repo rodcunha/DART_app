@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper} from 'google-maps-react';
+import EscapeRegExp from 'escape-string-regexp';
 import propTypes from 'prop-types';
 import Data from './stations.json';
 // import child component
@@ -13,7 +14,8 @@ const stations = Data.dartStations;
 class App extends Component {
   state = {
     query: '',
-    places: stations
+    places: stations,
+    filteredPlaces: stations
   }
 
   updateQuery = (e) => {
@@ -22,17 +24,13 @@ class App extends Component {
   if (query.length >= 0) {
     this.setState({ query })
     } else {
-      this.setState({ listofPlaces: [] })
+      this.setState({ query: '' })
     }
   }
 
   componentDidMount() {
     this.loadMap(); /* call loadMap function to load the google map */
     console.log(this.state.places)
-  }
-
-  componentDidUpdate() {
-
   }
 
   loadMap() {
@@ -52,10 +50,11 @@ class App extends Component {
       const map = new maps.Map(node, mapConfig); // creates a new Google map on the specified node (ref='map') with the specified configuration set above.
 
       const largeInfoWindow = new maps.InfoWindow(); //creates a new instance of an infoWindow maps element
+      const places = this.state.filteredPlaces;
 
-      for (let i =0; i < stations.length; i++ ) {
-        const position = {lat: stations[i].lat, lng: stations[i].lng};
-        const title = stations[i].name;
+      for (let i =0; i < places.length; i++ ) {
+        const position = {lat: places[i].lat, lng: places[i].lng};
+        const title = places[i].name;
 
         const marker = new maps.Marker({
           map: map,
@@ -84,15 +83,22 @@ class App extends Component {
     }
   }
 
-
   render() {
+    let showingContacts
+
+    if (this.state.query) {
+       const match = new RegExp(EscapeRegExp(this.state.query), 'i')
+       showingContacts = this.state.places.filter( place => match.test(place.name));
+     } else {
+       showingContacts = stations;
+     }
 
     return (
       <div>
         <div id="map-container" ref="map">
           loading map...
         </div>
-        <List query={this.state.query} places={this.state.places} updateQuery={this.updateQuery} />
+        <List query={this.state.query} places={this.state.places} filteredResults={showingContacts} updateQuery={this.updateQuery} />
       </div>
     );
   }

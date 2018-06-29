@@ -1,10 +1,28 @@
 import React, {Component} from 'react'
 import SearchBar from './SearchBar'
+import EscapeRegExp from 'escape-string-regexp'
+import SortBy from 'sort-by'
 
 class List extends Component {
+  // state = {
+  //   showingPlaces: this.props.places
+  // }
+  //
+  // componentWillUpdate() {
+  //   if (this.props.query) {
+  //     const match = new RegExp(EscapeRegExp(this.props.query), 'i')
+  //     this.state.showingPlaces = this.props.places.filter( place => match.test(place.name));
+  //   } else {
+  //     this.setState({showingPlaces: this.props.places });
+  //   }
+  // }
 
   render() {
-    const {query, places} = this.props;
+    const {query, places, filteredResults} = this.props;
+
+
+
+
 
     return(
       <div id="list-container">
@@ -12,7 +30,7 @@ class List extends Component {
         <SearchBar {...this.props} />
         {console.log(places)}
         <ul id="list--of--places">
-          {places.map( (place) => (
+            {filteredResults.map( (place) => (
             <li key={place.id} className="list--result">
               <p>{place.name}</p>
             </li>

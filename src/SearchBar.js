@@ -8,14 +8,13 @@ class SearchBar extends Component {
         fontSize: '18px',
         border: 'none',
         padding: '12px 6px',
-        textTransform: 'uppercase',
         width: '90%',
         zIndex: '12'
       }
 
     return(
       <div id="searchbar-container">
-        <input type="text" placeholder="Search your Place" style={styles} onChange={e => this.props.updateQuery(e.target.value)} value={this.props.query} />
+        <input type="text" placeholder="Filter the station" aria-label="filter Stations" style={styles} onChange={e => this.props.updateQuery(e.target.value)} value={this.props.query} />
       </div>
     )
   }
