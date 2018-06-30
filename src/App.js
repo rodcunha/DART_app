@@ -3,26 +3,59 @@ import ReactDOM from 'react-dom';
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
+import Modal from 'react-modal'
 import EscapeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by';
 import propTypes from 'prop-types';
-import Data from './stations.json';
+//import Data from './stations.json';
 // import child component
 import List from './List';
 
-const stations = Data.dartStations; //import the json array
+//const stations = Data.dartStations; //import the json array
+const modalStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+Modal.setAppElement('body')
 
 class App extends Component {
-  state = {
-    query: '', //initial query state
-    filteredPlaces: [], // Places after they have been filtered by the input
-    venues: [],   // Venues from the foursquare API
-    markers: []  // Array of markers from Google Maps
+  constructor(props) {
+    super(props)
+    this.state = {
+      query: '', //initial query state
+      filteredPlaces: [], // Places after they have been filtered by the input
+      venues: [],   // Venues from the foursquare API
+      markers: [],  // Array of markers from Google Maps
+      modalIsOpen: false,
+      selectedMarker: []
+    }
+
+    this.openModal = this.openModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   componentDidMount() {
-  //  this.loadMap(); /* call loadMap function to load the google map */
     this.getVenues(); /* call the getVenues function when the component mounts */
+  }
+
+  openModal() {
+    this.setState({modalIsOpen: true});
+  }
+
+  afterOpenModal() {
+  // references are now sync'd and can be accessed.
+    this.subtitle.style.color = '#f00';
+  }
+
+  closeModal() {
+    this.setState({modalIsOpen: false});
   }
 
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
@@ -35,7 +68,7 @@ class App extends Component {
       this.getVenues();
     //  this.loadMap();
     } else {
-      this.setState({ query: '', filteredPlaces: stations })
+      this.setState({ query: '', filteredPlaces: this.state.venues })
     }
   }
 
@@ -52,8 +85,12 @@ class App extends Component {
     })
   }
 
-  onMarkerClick(id, index) {
+  onMarkerClick() {
+    this.setState({selectedMarker: this })
+  }
 
+  onListClick() {
+    this.setState({selectedMarker: this })
   }
 
   render() {
@@ -82,14 +119,27 @@ class App extends Component {
                   key={marker.id}
                   animation={marker.defaultAnimation}
                   name={marker.name}
+                  address={marker.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
-                  onClick={this.onClickMarker}
+                  onClick={this.onMarkerClick}
                 />
             ))}
           </Map>
         </div>
-        <List query={this.state.query} places={this.state.places} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
-      </div>
+        <List query={this.state.query} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={modalStyles}
+            contentLabel="Example Modal"
+          >
+          <h2>{this.state.selectedMarker.name}</h2>
+          <button onClick={this.closeModal}>close</button>
+          <div>I am a modal</div>
+          </Modal>
+
+    </div>
     );
   }
 }

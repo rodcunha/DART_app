@@ -8,11 +8,11 @@ export default class List extends Component {
 
     return(
       <div id="list-container">
-        <h2>List of Places</h2>
+        <h2>List of Stations</h2>
         <SearchBar {...this.props} />
         <ul id="list--of--places">
             {filteredResults.map( (place) => (
-            <li key={place.id} className="list--result">
+            <li key={place.id} className="list--result" onClick={this.props.onListClick}>
               <p>{place.name}</p>
             </li>
           ))}
