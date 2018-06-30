@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 import SearchBar from './SearchBar'
-import EscapeRegExp from 'escape-string-regexp'
-import SortBy from 'sort-by'
 
 class List extends Component {
   // state = {

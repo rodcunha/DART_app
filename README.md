@@ -24,6 +24,7 @@ The app will feature the usage of a service worker to cache visited pages and ma
 - Google-Maps-React
 - Sort-By
 - Escape String Regexp
+- react-foursquare
 
 You will need to use npm install to install all of the above packages.
 

@@ -4,6 +4,7 @@ import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper} from 'google-maps-react';
 import EscapeRegExp from 'escape-string-regexp';
+import sortBy from 'sort-by';
 import propTypes from 'prop-types';
 import Data from './stations.json';
 // import child component
@@ -11,26 +12,51 @@ import List from './List';
 
 const stations = Data.dartStations;
 
+var foursquare = require('react-foursquare')({
+  clientID: 'KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE',
+  clientSecret: 'EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO'
+});
+
 class App extends Component {
   state = {
     query: '',
     places: stations,
-    filteredPlaces: stations
+    filteredPlaces: stations,
+    items: []
+  }
+
+  componentDidMount() {
+    this.loadMap(); /* call loadMap function to load the google map */
+    this.getVenues();
   }
 
   updateQuery = (e) => {
-   const query = e;
+    const query = e;
 
-  if (query.length >= 0) {
-    this.setState({ query })
+    /* if the input field is filled set the state of query to its value */
+    if (query.length >= 0) {
+      this.setState({ query })
+      this.getVenues();
     } else {
       this.setState({ query: '' })
     }
   }
 
-  componentDidMount() {
-    this.loadMap(); /* call loadMap function to load the google map */
-    console.log(this.state.places)
+
+  getVenues() {
+    /* initialize the parameters for the forsquare API */
+    var params = {
+      "ll": "53.322299,-6.142332",
+      categoryId: '4bf58dd8d48988d129951735',
+      "query": this.state.query
+    };
+
+    /* Get the venues from the API and set the state to match the found venues */
+    foursquare.venues.getVenues(params)
+      .then(res=> {
+        const match = new RegExp(EscapeRegExp(this.state.query), 'i') // filters the results to match the query
+        this.setState({ items: res.response.venues.filter( venue => match.test(venue.name)) });
+      });
   }
 
   loadMap() {
@@ -66,6 +92,7 @@ class App extends Component {
 
         marker.addListener('click', () => {
           populateInfoWindow(marker, largeInfoWindow);
+          console.log(this.state.items)
         })
       }
   /* this function will populate the info window with the information we pass from each marker */
@@ -84,21 +111,22 @@ class App extends Component {
   }
 
   render() {
-    let showingContacts
+    let showingPlaces
 
     if (this.state.query) {
        const match = new RegExp(EscapeRegExp(this.state.query), 'i')
-       showingContacts = this.state.places.filter( place => match.test(place.name));
+       showingPlaces = this.state.places.filter( place => match.test(place.name));
      } else {
-       showingContacts = stations;
+       showingPlaces = stations;
      }
+     showingPlaces.sort(sortBy('name'))
 
     return (
       <div>
         <div id="map-container" ref="map">
           loading map...
         </div>
-        <List query={this.state.query} places={this.state.places} filteredResults={showingContacts} updateQuery={this.updateQuery} />
+        <List query={this.state.query} places={this.state.places} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
       </div>
     );
   }

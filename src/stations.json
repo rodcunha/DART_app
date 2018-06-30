@@ -2,21 +2,21 @@
   "dartStations":  [
     {
       "id": 1,
-      "name": "Bray Dart Station",
-      "lat": 53.204339,
-      "lng": -6.100885
+      "name": "Bray DART Station",
+      "lat": 53.20444270726469,
+      "lng": -6.100960416211539
     },
     {
       "id": 2,
-      "name": "Greystones Dart Station",
-      "lat": 53.144078,
-      "lng": -6.061016
+      "name": "Greystones DART Station",
+      "lat": 53.14404308114661,
+      "lng":  -6.061074340021408
     },
     {
       "id": 3,
       "name": "Dalkey Dart Station",
-      "lat": 53.275787,
-      "lng": -6.103313
+      "lat": 53.27578833883538,
+      "lng": -6.103385426634249
     },
     {
       "id": 4,
@@ -44,42 +44,30 @@
     },
     {
       "id": 8,
-      "name": "Tara Street Dart Station",
-      "lat": 53.347088,
-      "lng": -6.254264
-    },
-    {
-      "id": 9,
       "name": "Connolly Dart Station",
       "lat": 53.350911,
       "lng": -6.249982
     },
     {
-      "id": 10,
+      "id": 9,
       "name": "Malahide Dart Station",
       "lat": 53.450739,
       "lng": -6.156490
     },
     {
-      "id": 11,
-      "name": "Sandymount Dart Station",
-      "lat": 53.327972,
-      "lng": -6.220918
-    },
-    {
-      "id": 12,
+      "id": 10,
       "name": "Dun Laoghaire Dart Station",
       "lat": 53.294893,
       "lng": -6.134482
     },
     {
-      "id": 13,
+      "id": 11,
       "name": "Docklands Dart Station",
       "lat": 53.350654,
       "lng": -6.239376
     },
     {
-      "id": 14,
+      "id": 12,
       "name": "Clontarf Road Dart Station",
       "lat": 53.363051,
       "lng": -6.226845
