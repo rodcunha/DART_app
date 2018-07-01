@@ -34,7 +34,6 @@ class App extends Component {
       zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
-      markers: [],  // Array of markers from Google Maps
       modalIsOpen: false,
       selectedMarker: []
     }
@@ -48,24 +47,22 @@ class App extends Component {
     this.getVenues(); /* call the getVenues function when the component mounts */
   }
 
-  openModal(data) {
-    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
-    const content = `
-                    <p>Station Name: ${data.name}</p>
-                    <p>Station Address: ${data.location.address}</p>
-                    <p>City: ${data.location.city}</p>
-                  <!--  <img src="${data.categories[0].icon.prefix+data.categories[0].icon.suffix}" alt="Image of ${data.name}" /> -->
-                    `
-    document.querySelector('#modal--content').innerHTML = content
-  }
-
-  afterOpenModal() {
-  // references are now sync'd and can be accessed.
-    this.subtitle.style.color = '#f00';
-  }
-
-  closeModal() {
-    this.setState({modalIsOpen: false, markers: this.state.venues, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, selectedMarker: [] });
+  // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
+  getVenues() {
+    fetch("https://api.foursquare.com/v2/venues/search?ll=53.322299,-6.142332&categoryId=4bf58dd8d48988d129951735&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629")
+    .then(res => res.json())
+    .then(data => {
+      const venues = data.response.venues;
+      venues.map( venue => (
+        venue.defaultAnimation = null,
+        venue.isVisible = true
+      ))
+      this.setState({venues})
+      console.log(this.state.venues)
+    })
+    .catch( err => {
+        alert(`ERROR: Couldn't load the FourSquare API Data`, err);
+    })
   }
 
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
@@ -82,58 +79,63 @@ class App extends Component {
     }
   }
 
-  getVenues() {
-    fetch("https://api.foursquare.com/v2/venues/search?ll=53.322299,-6.142332&categoryId=4bf58dd8d48988d129951735&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629")
-    .then(res => res.json())
-    .then(data => {
-      const venues = data.response.venues;
-      console.log(venues)
-      venues.map( venue => (
-        venue.defaultAnimation = 'this.props.google.maps.Animaton.BOUNCE'
-      ))
-      this.setState({venues: venues, markers: venues})
-      console.log(this.state.venues)
-    })
-    .catch( err => {
-        alert(`ERROR: Couldn't load the FourSquare API Data`, err);
-    })
+  //opens the modal and executes the function to add the data from the marker selected
+  openModal(data) {
+    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
+    const content = `
+                    <p>Station Name: ${data.name}</p>
+                    <p>Station Address: ${data.location.address}</p>
+                    <p>City: ${data.location.city}</p>
+                  <!--  <img src="${data.categories[0].icon.prefix+data.categories[0].icon.suffix}" alt="Image of ${data.name}" /> -->
+                    `
+    document.querySelector('#modal--content').innerHTML = content
   }
 
-  checkIfAMarkerIsSelected() {
-    if (this.state.selectedMarker) {
-      this.setState({filteredPlaces: this.state.selectedMarker});
-      console.log(this.state.selectedMarker)
-      console.log(this.state.filteredPlaces)
-    } else {
-      this.setState({filteredPlaces: showingPlaces});
+  //runs after the modal has been open
+    afterOpenModal() {
+    // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
     }
-  }
 
+    closeModal() {
+      this.setState({modalIsOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
+    }
+
+
+// this function is called when a marker on the map is clicked checks the id and assigns the selected marker in the state
   onMarkerClick(id, event) {
     this.state.filteredPlaces.filter( marker => {
       if ( marker.id === id ) {
-        this.setState({selectedMarker: marker})
-        this.checkIfAMarkerIsSelected();
+        marker.isVisible = true;
+        marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
         this.openModal(marker)
+      } else {
+        marker.isVisible = false;
       }
     })
   }
 
-  onListClick(e) {
+  onListClick(e, filteredPlaces) {
     const listItems = document.querySelectorAll('.list--result');
 
     listItems.forEach( station => {
-      console.log(this.state.filteredPlaces)
-      this.state.filteredPlaces.filter( marker => {
-        if ( station.getAttribute('data-id') === marker.id) {
-          console.log(marker)
-        }
+      filteredPlaces.find( marker => {
+        console.log(station.getAttribute('data-id'))
+        // if ( station.getAttribute('data-id') === marker.id) {
+        //   console.log(marker)
+        // }
       });
     });
   }
 
+  // checks if the marker is selected and assigns the state to the selected marker
+    isMarKerVisible() {
+
+    }
+
   render() {
 
+// if there is a query we filter the list of stations from the API and assign them to the filtered places state
     if (this.state.query) {
        const match = new RegExp(EscapeRegExp(this.state.query), 'i');
        showingPlaces = this.state.venues.filter( place => match.test(place.name));
@@ -152,6 +154,7 @@ class App extends Component {
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
             zoom={this.state.zoom}>
             {this.state.filteredPlaces.map((marker, index) => (
+              marker.isVisible ?
                 <Marker
                   key={marker.id}
                   animation={marker.defaultAnimation}
@@ -160,7 +163,7 @@ class App extends Component {
                   address={marker.location.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
                   onClick={e => { this.onMarkerClick(marker.id, e)}}
-                />
+                /> : null
             ))}
           </Map>
         </div>
