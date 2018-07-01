@@ -30,6 +30,8 @@ class App extends Component {
     super(props)
     this.state = {
       query: '', //initial query state
+      center: {lat: 53.322299, lng: -6.142332}, //mapcenter
+      zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
       markers: [],  // Array of markers from Google Maps
@@ -80,7 +82,7 @@ class App extends Component {
       const venues = data.response.venues;
       console.log(venues)
       venues.map( venue => (
-        venue.animation = 'google.maps.Animaton.BOUNCE'
+        venue.defaultAnimation = 'google.maps.Animaton.BOUNCE'
       ))
       this.setState({venues: venues, markers: venues})
       console.log(this.state.venues)
@@ -123,13 +125,14 @@ class App extends Component {
           <Map
             google={this.props.google}
             style={this.style}
-            center={{lat: 53.322299, lng: -6.142332}}
-            zoom={11}>
+            center={{lat: this.state.center.lat, lng: this.state.center.lng}}
+            zoom={this.state.zoom}>
             {this.state.filteredPlaces.map((marker, index) => (
                 <Marker
                   key={marker.id}
-                  animation={marker.animation}
+                  animation={marker.defaultAnimation}
                   name={marker.name}
+                  picture={marker.categories[0].icon.prefix+marker.categories[0].icon.suffix}
                   address={marker.location.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
                   onClick={this.onMarkerClick}

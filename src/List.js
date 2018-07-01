@@ -4,7 +4,7 @@ import SearchBar from './SearchBar'
 export default class List extends Component {
 
   render() {
-    const {filteredResults} = this.props;
+    const {filteredResults, onListClick} = this.props;
 
     return(
       <div id="list-container">
@@ -12,7 +12,7 @@ export default class List extends Component {
         <SearchBar {...this.props} />
         <ul id="list--of--places">
             {filteredResults.map( (place) => (
-            <li key={place.id} data-id={place.id} className="list--result" onClick={this.props.onListClick}>
+            <li key={place.id} role="list-item" data-id={place.id} className="list--result" onClick={(event) => onListClick(event, filteredResults)}>
               <span>{place.name}</span>
             </li>
           ))}
