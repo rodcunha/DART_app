@@ -15,7 +15,7 @@ import List from './List';
 let showingPlaces
 const modalStyles = {
   content : {
-    top                   : '50%',
+    top                   : '30%',
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',
@@ -49,8 +49,7 @@ class App extends Component {
   }
 
   openModal(data) {
-    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14 });
-
+    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
     const content = `
                     <p>Station Name: ${data.name}</p>
                     <p>Station Address: ${data.location.address}</p>
@@ -66,7 +65,7 @@ class App extends Component {
   }
 
   closeModal() {
-    this.setState({modalIsOpen: false, markers: this.state.venues});
+    this.setState({modalIsOpen: false, markers: this.state.venues, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, selectedMarker: [] });
   }
 
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
@@ -100,11 +99,21 @@ class App extends Component {
     })
   }
 
+  checkIfAMarkerIsSelected() {
+    if (this.state.selectedMarker) {
+      this.setState({filteredPlaces: this.state.selectedMarker});
+      console.log(this.state.selectedMarker)
+      console.log(this.state.filteredPlaces)
+    } else {
+      this.setState({filteredPlaces: showingPlaces});
+    }
+  }
+
   onMarkerClick(id, event) {
     this.state.filteredPlaces.filter( marker => {
       if ( marker.id === id ) {
-        this.setState({markers: marker})
-        console.log(this.state.markers)
+        this.setState({selectedMarker: marker})
+        this.checkIfAMarkerIsSelected();
         this.openModal(marker)
       }
     })
