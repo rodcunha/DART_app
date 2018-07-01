@@ -12,6 +12,7 @@ import propTypes from 'prop-types';
 import List from './List';
 
 //const stations = Data.dartStations; //import the json array
+let showingPlaces
 const modalStyles = {
   content : {
     top                   : '50%',
@@ -77,6 +78,10 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       const venues = data.response.venues;
+      console.log(venues)
+      venues.map( venue => (
+        venue.animation = 'google.maps.Animaton.BOUNCE'
+      ))
       this.setState({venues: venues, markers: venues})
       console.log(this.state.venues)
     })
@@ -86,25 +91,31 @@ class App extends Component {
   }
 
   onMarkerClick() {
-    this.setState({selectedMarker: this })
+    console.log(this)
   }
 
-  onListClick() {
-    this.setState({selectedMarker: this })
+  onListClick(e) {
+    const listItems = document.querySelectorAll('.list--result');
+
+    listItems.forEach( station => {
+      this.state.filteredPlaces.filter( marker => {
+        if ( station.getAttribute('data-id') === marker.id) {
+          console.log(marker)
+        }
+      });
+    });
   }
 
   render() {
 
-    let showingPlaces
-
     if (this.state.query) {
-       const match = new RegExp(EscapeRegExp(this.state.query), 'i')
+       const match = new RegExp(EscapeRegExp(this.state.query), 'i');
        showingPlaces = this.state.venues.filter( place => match.test(place.name));
      } else {
        showingPlaces = this.state.venues;
      }
      this.state.filteredPlaces = showingPlaces;
-     showingPlaces.sort(sortBy('name'))
+     showingPlaces.sort(sortBy('name'));
 
     return (
       <div>
@@ -117,22 +128,22 @@ class App extends Component {
             {this.state.filteredPlaces.map((marker, index) => (
                 <Marker
                   key={marker.id}
-                  animation={marker.defaultAnimation}
+                  animation={marker.animation}
                   name={marker.name}
-                  address={marker.address}
+                  address={marker.location.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
                   onClick={this.onMarkerClick}
                 />
             ))}
           </Map>
         </div>
-        <List query={this.state.query} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
+        <List query={this.state.query} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
           <Modal
             isOpen={this.state.modalIsOpen}
             onAfterOpen={this.afterOpenModal}
             onRequestClose={this.closeModal}
             style={modalStyles}
-            contentLabel="Example Modal"
+            contentLabel="Dublin Area Train Stations"
           >
           <h2>{this.state.selectedMarker.name}</h2>
           <button onClick={this.closeModal}>close</button>
