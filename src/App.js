@@ -48,8 +48,16 @@ class App extends Component {
     this.getVenues(); /* call the getVenues function when the component mounts */
   }
 
-  openModal() {
-    this.setState({modalIsOpen: true});
+  openModal(data) {
+    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14 });
+
+    const content = `
+                    <p>Station Name: ${data.name}</p>
+                    <p>Station Address: ${data.location.address}</p>
+                    <p>City: ${data.location.city}</p>
+                  <!--  <img src="${data.categories[0].icon.prefix+data.categories[0].icon.suffix}" alt="Image of ${data.name}" /> -->
+                    `
+    document.querySelector('#modal--content').innerHTML = content
   }
 
   afterOpenModal() {
@@ -58,7 +66,7 @@ class App extends Component {
   }
 
   closeModal() {
-    this.setState({modalIsOpen: false});
+    this.setState({modalIsOpen: false, markers: this.state.venues});
   }
 
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
@@ -82,7 +90,7 @@ class App extends Component {
       const venues = data.response.venues;
       console.log(venues)
       venues.map( venue => (
-        venue.defaultAnimation = 'google.maps.Animaton.BOUNCE'
+        venue.defaultAnimation = 'this.props.google.maps.Animaton.BOUNCE'
       ))
       this.setState({venues: venues, markers: venues})
       console.log(this.state.venues)
@@ -92,14 +100,21 @@ class App extends Component {
     })
   }
 
-  onMarkerClick() {
-    console.log(this)
+  onMarkerClick(id, event) {
+    this.state.filteredPlaces.filter( marker => {
+      if ( marker.id === id ) {
+        this.setState({markers: marker})
+        console.log(this.state.markers)
+        this.openModal(marker)
+      }
+    })
   }
 
   onListClick(e) {
     const listItems = document.querySelectorAll('.list--result');
 
     listItems.forEach( station => {
+      console.log(this.state.filteredPlaces)
       this.state.filteredPlaces.filter( marker => {
         if ( station.getAttribute('data-id') === marker.id) {
           console.log(marker)
@@ -135,7 +150,7 @@ class App extends Component {
                   picture={marker.categories[0].icon.prefix+marker.categories[0].icon.suffix}
                   address={marker.location.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
-                  onClick={this.onMarkerClick}
+                  onClick={e => { this.onMarkerClick(marker.id, e)}}
                 />
             ))}
           </Map>
@@ -148,11 +163,10 @@ class App extends Component {
             style={modalStyles}
             contentLabel="Dublin Area Train Stations"
           >
-          <h2>{this.state.selectedMarker.name}</h2>
+          <h2>Station Information</h2>
+          <div id="modal--content"></div>
           <button onClick={this.closeModal}>close</button>
-          <div>I am a modal</div>
           </Modal>
-
     </div>
     );
   }
