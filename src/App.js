@@ -39,8 +39,9 @@ class App extends Component {
     }
 
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
+    // this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.onListClick = this.onListClick.bind(this);
   }
 
   componentDidMount() {
@@ -82,56 +83,47 @@ class App extends Component {
   //opens the modal and executes the function to add the data from the marker selected
   openModal(data) {
     this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
+    const modalContent = document.querySelector('#modal--content');
     const content = `
                     <p>Station Name: ${data.name}</p>
                     <p>Station Address: ${data.location.address}</p>
                     <p>City: ${data.location.city}</p>
                   <!--  <img src="${data.categories[0].icon.prefix+data.categories[0].icon.suffix}" alt="Image of ${data.name}" /> -->
                     `
-    document.querySelector('#modal--content').innerHTML = content
+    modalContent.innerHTML = content;
   }
 
-  //runs after the modal has been open
-    afterOpenModal() {
-    // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
-    }
+  // //runs after the modal has been open
+  //   afterOpenModal() {
+  //   // references are now sync'd and can be accessed.
+  //     this.subtitle.style.color = '#f00';
+  //   }
 
-    closeModal() {
-      this.setState({modalIsOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
-    }
+  closeModal() {
+    this.setState({modalIsOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
+  }
 
-
-// this function is called when a marker on the map is clicked checks the id and assigns the selected marker in the state
-  onMarkerClick(id, event) {
+// this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
+  checkSelectedMarker(id, event) {
     this.state.filteredPlaces.filter( marker => {
-      if ( marker.id === id ) {
+      if ( marker.id !== id ) {
+        marker.isVisible = false;
+        marker.defaultAnimation = null;
+      } else {
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
         this.openModal(marker)
-      } else {
-        marker.isVisible = false;
       }
     })
   }
 
-  onListClick(e, filteredPlaces) {
-    const listItems = document.querySelectorAll('.list--result');
-
-    listItems.forEach( station => {
-      filteredPlaces.find( marker => {
-        console.log(station.getAttribute('data-id'))
-        // if ( station.getAttribute('data-id') === marker.id) {
-        //   console.log(marker)
-        // }
-      });
-    });
+  onMarkerClick(id, event) {
+    this.checkSelectedMarker(id, event);
   }
 
-  // checks if the marker is selected and assigns the state to the selected marker
-    isMarKerVisible() {
-
-    }
+  onListClick(id, event) {
+    this.checkSelectedMarker(id, event);
+  }
 
   render() {
 
