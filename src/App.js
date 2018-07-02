@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom'
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
@@ -10,7 +11,7 @@ import propTypes from 'prop-types';
 import List from './List';
 
 //const stations = Data.dartStations; //import the json array
-let showingPlaces, photos
+let showingPlaces, modalContent
 const modalStyles = {
   content : {
     top                   : '30%',
@@ -32,12 +33,10 @@ class App extends Component {
       zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
-      isOpen: false,
-      photos: []
+      isOpen: false
     }
 
     this.openModal = this.openModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.onListClick = this.onListClick.bind(this);
   }
@@ -63,19 +62,6 @@ class App extends Component {
     })
   }
 
-  getVenuePhotos(id) {
-    // fetch(`https://api.foursquare.com/v2/venues/${id}/photos?&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO`)
-    fetch(`https://api.foursquare.com/v2/venues/${id}/photos?&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180702`)
-    .then(res => res.json())
-    .then(data => {
-      photos = data.response.photos.items;
-      this.setState({photos})
-      console.log(this.state.photos);
-    }).catch( err => {
-      console.log(err)
-    })
-  }
-
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
   updateQuery = (e) => {
     const query = e;
@@ -93,22 +79,6 @@ class App extends Component {
   // opens the modal and executes the function to add the data from the marker selected
   openModal(data) {
     this.setState({isOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
-    this.getVenuePhotos(data.id)
-    console.log(this.state.photos)
-    const content = `
-                    <p>Station Name: ${data.name}</p>
-                    <p>Station Address: ${data.location.address}</p>
-                    <p>City: ${data.location.city}</p>
-                    <img src="${data.categories[0].icon.prefix+"100"+data.categories[0].icon.suffix}" alt="Image of ${data.name}" />
-                    `
-    this.afterOpenModal(content)
-  }
-
-  //runs after the modal has been open
-  afterOpenModal(content) {
-  // references are now sync'd and can be accessed.
-    const modalContent = document.querySelector('#modal--content');
-    modalContent.innerHTML = content;
   }
 
   closeModal() {
@@ -125,7 +95,12 @@ class App extends Component {
       } else {
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
-        console.log(marker)
+        modalContent = {
+          name: marker.name,
+          address: marker.location.address,
+          city: marker.location.city,
+          country: marker.location.country
+        }
         this.openModal(marker)
       }
     })
@@ -133,14 +108,10 @@ class App extends Component {
 
 
   onMarkerClick(id) {
-    console.log(this)
-    //console.log(id)
     this.checkSelectedMarker(id);
   }
 
   onListClick(id) {
-    console.log(this)
-    //console.log(id)
     this.checkSelectedMarker(id);
   }
 
@@ -180,9 +151,9 @@ class App extends Component {
         </div>
         <List query={this.state.query} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
           <Modal show={this.state.isOpen}
-            onClose={this.closeModal}>
-
-          </Modal>
+            onClose={this.closeModal}
+            content={modalContent}
+            />
     </div>
     )
   }
