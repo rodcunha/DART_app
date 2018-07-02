@@ -17,11 +17,13 @@ You can do so by running the following command:
 after this run
 
 `npm install`
+
 `npm run build`
 
 In order to run the app you will need to build it using: 
 
 `npm run build`
+
 `serve -s build` 
 
 You will need to access: http://localhost:5000
