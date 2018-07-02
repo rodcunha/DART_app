@@ -12,7 +12,7 @@ export default class List extends Component {
         <SearchBar {...this.props} />
         <ul id="list--of--places">
             {filteredResults.map( (place) => (
-            <li key={place.id} role="list-item" data-id={place.id} className="list--result" onClick={(event) => onListClick(place.id, event)}>
+            <li key={place.id} role="list-item" data-id={place.id} className="list--result" onClick={(event) => onListClick(place.id)}>
               <span data-id={place.id}>{place.name}</span>
             </li>
           ))}

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
-import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
+import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
 import Modal from 'react-modal'
 import EscapeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by';
@@ -104,7 +103,7 @@ class App extends Component {
   }
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
-  checkSelectedMarker(id, event) {
+  checkSelectedMarker(id) {
     this.state.filteredPlaces.filter( marker => {
       if ( marker.id !== id ) {
         marker.isVisible = false;
@@ -117,12 +116,16 @@ class App extends Component {
     })
   }
 
-  onMarkerClick(id, event) {
-    this.checkSelectedMarker(id, event);
+  onMarkerClick(id) {
+    console.log(this)
+    //console.log(id)
+    this.checkSelectedMarker(id);
   }
 
-  onListClick(id, event) {
-    this.checkSelectedMarker(id, event);
+  onListClick(id) {
+    console.log(this)
+    //console.log(id)
+    this.checkSelectedMarker(id);
   }
 
   render() {
@@ -154,7 +157,7 @@ class App extends Component {
                   picture={marker.categories[0].icon.prefix+marker.categories[0].icon.suffix}
                   address={marker.location.address}
                   position={{lat: marker.location.lat, lng: marker.location.lng}}
-                  onClick={e => { this.onMarkerClick(marker.id, e)}}
+                  onClick={e => { this.onMarkerClick(marker.id)}}
                 /> : null
             ))}
           </Map>
