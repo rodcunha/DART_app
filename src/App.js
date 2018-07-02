@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
-import Modal from 'react-modal'
+import Modal from './StationsModal'
 import EscapeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by';
 import propTypes from 'prop-types';
-//import Data from './stations.json';
 // import child component
 import List from './List';
 
 //const stations = Data.dartStations; //import the json array
-let showingPlaces
+let showingPlaces, photos
 const modalStyles = {
   content : {
     top                   : '30%',
@@ -22,7 +21,7 @@ const modalStyles = {
     transform             : 'translate(-50%, -50%)'
   }
 };
-Modal.setAppElement('body')
+//Modal.setAppElement('body')
 
 class App extends Component {
   constructor(props) {
@@ -33,12 +32,12 @@ class App extends Component {
       zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
-      modalIsOpen: false,
-      selectedMarker: []
+      isOpen: false,
+      photos: []
     }
 
     this.openModal = this.openModal.bind(this);
-    // this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.onListClick = this.onListClick.bind(this);
   }
@@ -58,10 +57,22 @@ class App extends Component {
         venue.isVisible = true
       ))
       this.setState({venues})
-      console.log(this.state.venues)
     })
     .catch( err => {
         alert(`ERROR: Couldn't load the FourSquare API Data`, err);
+    })
+  }
+
+  getVenuePhotos(id) {
+    // fetch(`https://api.foursquare.com/v2/venues/${id}/photos?&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO`)
+    fetch(`https://api.foursquare.com/v2/venues/${id}/photos?&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180702`)
+    .then(res => res.json())
+    .then(data => {
+      photos = data.response.photos.items;
+      this.setState({photos})
+      console.log(this.state.photos);
+    }).catch( err => {
+      console.log(err)
     })
   }
 
@@ -79,27 +90,30 @@ class App extends Component {
     }
   }
 
-  //opens the modal and executes the function to add the data from the marker selected
+  // opens the modal and executes the function to add the data from the marker selected
   openModal(data) {
-    this.setState({modalIsOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
-    const modalContent = document.querySelector('#modal--content');
+    this.setState({isOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
+    this.getVenuePhotos(data.id)
+    console.log(this.state.photos)
     const content = `
                     <p>Station Name: ${data.name}</p>
                     <p>Station Address: ${data.location.address}</p>
                     <p>City: ${data.location.city}</p>
-                  <!--  <img src="${data.categories[0].icon.prefix+data.categories[0].icon.suffix}" alt="Image of ${data.name}" /> -->
+                    <img src="${data.categories[0].icon.prefix+"100"+data.categories[0].icon.suffix}" alt="Image of ${data.name}" />
                     `
+    this.afterOpenModal(content)
+  }
+
+  //runs after the modal has been open
+  afterOpenModal(content) {
+  // references are now sync'd and can be accessed.
+    const modalContent = document.querySelector('#modal--content');
     modalContent.innerHTML = content;
   }
 
-  // //runs after the modal has been open
-  //   afterOpenModal() {
-  //   // references are now sync'd and can be accessed.
-  //     this.subtitle.style.color = '#f00';
-  //   }
-
   closeModal() {
-    this.setState({modalIsOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
+    this.setState({isOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
+    this.state.filteredPlaces.map( marker => marker.isVisible = true)
   }
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
@@ -111,10 +125,12 @@ class App extends Component {
       } else {
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
+        console.log(marker)
         this.openModal(marker)
       }
     })
   }
+
 
   onMarkerClick(id) {
     console.log(this)
@@ -163,19 +179,12 @@ class App extends Component {
           </Map>
         </div>
         <List query={this.state.query} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
-          <Modal
-            isOpen={this.state.modalIsOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeModal}
-            style={modalStyles}
-            contentLabel="Dublin Area Train Stations"
-          >
-          <h2>Station Information</h2>
-          <div id="modal--content"></div>
-          <button onClick={this.closeModal}>close</button>
+          <Modal show={this.state.isOpen}
+            onClose={this.closeModal}>
+
           </Modal>
     </div>
-    );
+    )
   }
 }
 
