@@ -4,13 +4,14 @@ import SearchBar from './SearchBar'
 //style for credits link
 const linkStyle = {
   color: '#ddd',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  marginTop: '24px'
 }
 
 export default class List extends Component {
 
   render() {
-    const {filteredResults, onListClick} = this.props;
+    const {filteredResults, onListClick, onError} = this.props;
 
     return(
       <div id="list-container">
@@ -23,6 +24,7 @@ export default class List extends Component {
             </li>
           ))}
         </ul>
+        <div id="onError">{onError}</div>
         <div>Results by <a href="https://foursquare.com/" style={linkStyle} target="_blank" rel="noopener noreferrer">FourSquare API</a></div>
       </div>
     )

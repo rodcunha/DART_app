@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
 import './App.css';
 // import the Google Maps API Wrapper from google-maps-react
 import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
@@ -12,17 +11,6 @@ import List from './List';
 
 //const stations = Data.dartStations; //import the json array
 let showingPlaces, modalContent
-const modalStyles = {
-  content : {
-    top                   : '30%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
-//Modal.setAppElement('body')
 
 class App extends Component {
   constructor(props) {
@@ -33,7 +21,8 @@ class App extends Component {
       zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
-      isOpen: false
+      isOpen: false,
+      error: ''
     }
 
     this.openModal = this.openModal.bind(this);
@@ -43,6 +32,13 @@ class App extends Component {
 
   componentDidMount() {
     this.getVenues(); /* call the getVenues function when the component mounts */
+
+    // this will help navigate and select elements from the list with enter or space
+    window.addEventListener('keydown', (e) => {
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        this.onListClick(e.srcElement.dataset.id);
+      }
+    });
   }
 
   // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
@@ -58,7 +54,7 @@ class App extends Component {
       this.setState({venues})
     })
     .catch( err => {
-        alert(`ERROR: Couldn't load the FourSquare API Data`, err);
+      this.setState({ error: 'There has been an error loading the Foursquare API, no places are available.', err })
     })
   }
 
@@ -84,6 +80,7 @@ class App extends Component {
   closeModal() {
     this.setState({isOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
     this.state.filteredPlaces.map( marker => marker.isVisible = true)
+    this.setState({ filteredPlaces: showingPlaces })
   }
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
@@ -127,12 +124,33 @@ class App extends Component {
      this.state.filteredPlaces = showingPlaces;
      showingPlaces.sort(sortBy('name'));
 
+     // sets the state to the error and displays on global errors including the map
+     window.onerror = function (msg, url, lineNo, columnNo, error) {
+      const string = msg.toLowerCase();
+      const substring = "script error";
+      if (string.indexOf(substring) > -1){
+          alert('Script Error: See Browser Console for Detail');
+      } else {
+          const message = [
+              'Message: ' + msg,
+              'URL: ' + url,
+              'Line: ' + lineNo,
+              'Column: ' + columnNo,
+              'Error object: ' + JSON.stringify(error)
+          ].join(' - ');
+
+          this.setState({error: message});
+    }
+    return false;
+};
+
     return (
       <div>
         <div id="map-container" ref="map">
           <Map
             google={this.props.google}
             style={this.style}
+            initialCenter={{lat: 53.322299, lng: -6.142332}}
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
             zoom={this.state.zoom}>
             {this.state.filteredPlaces.map((marker, index) => (
@@ -149,10 +167,11 @@ class App extends Component {
             ))}
           </Map>
         </div>
-        <List query={this.state.query} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
+        <List query={this.state.query} onError={this.state.error} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
           <Modal show={this.state.isOpen}
             onClose={this.closeModal}
             content={modalContent}
+            isOpen={this.state.isOpen}
             />
     </div>
     )
