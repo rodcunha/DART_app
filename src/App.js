@@ -32,13 +32,6 @@ class App extends Component {
 
   componentDidMount() {
     this.getVenues(); /* call the getVenues function when the component mounts */
-
-    // this will help navigate and select elements from the list with enter or space
-    window.addEventListener('keydown', (e) => {
-      if (e.keyCode === 13 || e.keyCode === 32) {
-        this.onListClick(e.srcElement.dataset.id);
-      }
-    });
   }
 
   // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
