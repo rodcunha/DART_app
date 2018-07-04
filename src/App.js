@@ -10,6 +10,10 @@ import propTypes from 'prop-types';
 import List from './List';
 
 let showingPlaces, modalContent
+window.gm_authFailure = () => {
+  const mapContainer = document.querySelector('#map-container');
+  mapContainer.innerHTML = `<h3 style="padding: 24px;">Error Loading Map - Bad Auth Token</h3>`;
+}
 
 window.gm_authFailure = function() {
     const mapContainer = document.querySelector('#map-container');
@@ -100,7 +104,6 @@ class App extends Component {
     })
   }
 
-
   onMarkerClick(id) {
     this.checkSelectedMarker(id);
   }
@@ -121,28 +124,8 @@ class App extends Component {
      this.state.filteredPlaces = showingPlaces;
      showingPlaces.sort(sortBy('name'));
 
-     // sets the state to the error and displays on global errors including the map
-     window.onerror = function (msg, url, lineNo, columnNo, error) {
-      const string = msg.toLowerCase();
-      const substring = "script error";
-      if (string.indexOf(substring) > -1){
-          alert('Script Error: See Browser Console for Detail');
-      } else {
-          const message = [
-              'Message: ' + msg,
-              'URL: ' + url,
-              'Line: ' + lineNo,
-              'Column: ' + columnNo,
-              'Error object: ' + JSON.stringify(error)
-          ].join(' - ');
-
-          this.setState({error: message});
-    }
-    return false;
-};
-
     return (
-      <div>
+      <main>
         <div id="map-container" ref="map">
           <Map
             google={this.props.google}
@@ -170,7 +153,7 @@ class App extends Component {
             content={modalContent}
             isOpen={this.state.isOpen}
             />
-    </div>
+      </main>
     )
   }
 }

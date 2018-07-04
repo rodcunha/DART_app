@@ -21,9 +21,6 @@ class Modal extends React.Component {
   }
 
   render() {
-
-    const {isOpen} = this.props
-
     // Render nothing if the "show" prop is false
     if(!this.props.show) {
       return null;
