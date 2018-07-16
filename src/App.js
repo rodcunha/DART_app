@@ -9,7 +9,7 @@ import propTypes from 'prop-types';
 // import child component
 import List from './List';
 
-let showingPlaces, modalContent, numberOfTrains
+let showingPlaces, modalContent, numberOfTrains, stationName
 
 window.gm_authFailure = () => {
   const mapContainer = document.querySelector('#map-container');
@@ -58,17 +58,19 @@ class App extends Component {
   }
 
   getTrains(marker) {
-    // let header = new Headers({
-    //   'Access-Control-Allow-Origin':'localhost:3000',
-    //   'Content-Type': "text/xml; charset=utf-8"
-    // });
-    // let sentData={
-    //     mode: 'cors',
-    //     header: header,
-    // };
     this.setState({trainInfo: []});
 
-    let stationName = marker.name.split(' ')[0];
+    // this accounts for stations where the name is more than one word on the Irish Rail api
+    // Ideally we will need to add a property to the foursquare API object with the station code, we will then check the Irish Rail API via this code instead of the station name
+    if (marker.name.split(' ')[0] === 'Dublin' || marker.name.split(' ')[0] === 'Lansdowne' || marker.name.split(' ')[0] === 'Sydney' || marker.name.split(' ')[0] === 'Tara' || marker.name.split(' ')[0] === 'Clontarf') {
+      stationName = marker.name.split(' ')[0]+'%20'+marker.name.split(' ')[1];
+    } else if (marker.name.split(' ')[0] === 'Grand') {
+      stationName = marker.name.split(' ')[0]+'%20'+marker.name.split(' ')[1]+'%20'+marker.name.split(' ')[2];
+    } else if (marker.name.split(' ')[0] === 'Dún') {
+      stationName = 'Dun%20Laoghaire'
+    } else {
+      stationName = marker.name.split(' ')[0];
+    }
 
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const url = `http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML?StationDesc=${stationName}&numMins=30`; // site that doesn’t send Access-Control-*

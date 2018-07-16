@@ -59,7 +59,9 @@
 
 .list--result:hover {
   cursor: pointer;
-  background-color: #f5f5f5;
+  background-color: #f3d19c;
+  color: #333;
+  transition: 0.4s;
 }
 
 .item--content {
