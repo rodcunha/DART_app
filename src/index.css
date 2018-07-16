@@ -9,24 +9,24 @@ body {
 #modalContent p {
   font-size: 1
   em;
-  color: #074481;
+  color: #f3d19c;
   font-weight: 600;
 }
 
 .grey {
-  color: #787878;
+  color: #a9a9a9;
   font-weight: 200;
 }
 
 table {
   width: 100%;
-  border: solid 1px #074481;
+  border: solid 1px #a9a9a9;
   margin: 0;
   padding:0;
 }
 
 tr {
-  border: 1px solid #074481;
+  border: 1px solid #a9a9a9;
   margin: 0;
   padding: 0;
 }
@@ -35,14 +35,25 @@ th, td {
   font-size: 0.8em;
   padding: 2px;
   margin: 0;
-  border: 1px solid #074481;
+  border: 1px solid #a9a9a9;
 }
 
 th {
-  color: #F3f3f3;
-  background: #074481;
+  color: #333;
+  background: #f3d19c;
 }
 
 button {
   margin-top: 24px;
+  background: #f3d19c;
+  padding: 10px 16px;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: '#333';
+}
+
+#close:hover {
+  background: #333;
+  border: 1px solid #f3d19c;
+  color: #f3d19c;
 }

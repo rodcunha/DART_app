@@ -253,7 +253,7 @@ class App extends Component {
         <div id="map-container" ref="map">
           <Map
             google={this.props.google}
-            options={mapStyles}
+            styles={mapStyles.styles}
             initialCenter={{lat: 53.322299, lng: -6.142332}}
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
             zoom={this.state.zoom}>
@@ -271,8 +271,17 @@ class App extends Component {
             ))}
           </Map>
         </div>
-        <List query={this.state.query} onError={this.state.error} element={this} onListClick={this.onListClick} filteredResults={showingPlaces} updateQuery={this.updateQuery} />
-          <Modal show={this.state.isOpen}
+        <List
+            query={this.state.query}
+            onError={this.state.error}
+            element={this}
+            onListClick={this.onListClick}
+            filteredResults={showingPlaces}
+            updateQuery={this.updateQuery}
+        />
+
+        <Modal
+            show={this.state.isOpen}
             onClose={this.closeModal}
             content={modalContent}
             trainInfo={this.state.trainInfo}

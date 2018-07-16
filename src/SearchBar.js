@@ -9,6 +9,8 @@ class SearchBar extends Component {
         border: 'none',
         padding: '12px 6px',
         width: '90%',
+        background: '#222',
+        color: '#f3d19c',
         zIndex: '12'
       }
 

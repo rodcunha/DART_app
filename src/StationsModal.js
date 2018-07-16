@@ -49,22 +49,16 @@ class Modal extends React.Component {
 
     // The modal "window"
     const modalStyle = {
-      backgroundColor: '#FDFDFD',
+      backgroundColor: '#333',
+      color: '#f3d19c',
       borderRadius: 5,
       maxWidth: 500,
       minHeight: 'auto',
       margin: '0 auto',
       overflow: 'visible',
+      border: '1px solid #f3d19c',
       padding: 30
     };
-
-    const buttonStyle = {
-      backgroundColor: '#074481',
-      padding: '10px 16px',
-      border: '1px solid white',
-      borderRadius: '10px',
-      color: '#FEFEFE'
-    }
 
     const southboundStyle = {
       marginTop: "24px"
@@ -144,7 +138,7 @@ class Modal extends React.Component {
           </div>
 
           <div className="footer">
-            <button id="close" ref="closeBtn" onClick={this.props.onClose} style={buttonStyle}>
+            <button id="close" ref="closeBtn" onClick={this.props.onClose}>
               Close
             </button>
           </div>

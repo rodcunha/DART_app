@@ -3,7 +3,7 @@ import SearchBar from './SearchBar'
 
 //style for credits link
 const linkStyle = {
-  color: '#ddd',
+  color: '#d59563',
   fontWeight: 'bold',
   marginTop: '24px'
 }

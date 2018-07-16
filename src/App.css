@@ -34,8 +34,8 @@
   width: 20vw;
   height: 100vh;
   z-index: 99;
-  background-color: rgba(0,0,0,01);
-  color: white;
+  background-color: #2f3948;
+  color: #f3d19c;
   padding: 8px;
   overflow: scroll;
 }
@@ -46,9 +46,9 @@
 }
 
 .list--result {
-  background: #fff;
+  background: #333;
   border-left: 5px solid transparent;
-  color: #074481;
+  color: #f3d19c;
   margin: 0;
   overflow: hidden;
   padding: 20px 5px;
@@ -74,6 +74,61 @@
   height: 100vh;
   position: absolute;
   right: 0;
+}
+
+
+#modalContent p {
+  font-size: 1
+  em;
+  color: #f3d19c;
+  font-weight: 600;
+}
+
+.grey {
+  color: #a9a9a9;
+  font-weight: 200;
+}
+
+/* Table Styles */
+
+table {
+  width: 100%;
+  border: solid 1px #a9a9a9;
+  margin: 0;
+  padding:0;
+}
+
+tr {
+  border: 1px solid #a9a9a9;
+  margin: 0;
+  padding: 0;
+}
+
+th, td {
+  font-size: 0.8em;
+  padding: 2px;
+  margin: 0;
+  border: 1px solid #a9a9a9;
+}
+
+th {
+  color: #333;
+  background: #f3d19c;
+}
+
+button {
+  margin-top: 24px;
+  background: #f3d19c;
+  padding: 10px 16px;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: '#333';
+}
+
+#close:hover {
+  background: #333;
+  border: 1px solid #f3d19c;
+  color: #f3d19c;
 }
 
 /* Responsive Styles */
