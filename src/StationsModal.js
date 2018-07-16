@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-let trainInfo = []
-
 class Modal extends React.Component {
-
-  state = {
-    trainInfo: this.props.trainInfo
-  }
 
   componentDidMount() {
     // handles the closing of the modal on Enter or Escape for better UX
@@ -18,32 +12,23 @@ class Modal extends React.Component {
     });
   }
 
+
   // this will pass the focus to the modal once the component updates
   componentDidUpdate() {
     if (this.props.isOpen) {
       var closeBtn = this.refs.closeBtn
       closeBtn.focus()
     }
-    this.renderTrainInfo()
   }
 
-  renderTrainInfo() {
-    console.log(this.props.trainInfo.length)
-    const train = this.props.trainInfo;
-    for ( let i = 0 ; i < this.props.trainInfo.length ; i++) {
-      trainInfo.push(
-        <tr key={train[i].trainInfo}>
-           <td>{train[i].Origin}</td>
-           <td>{train[i].Destination}</td>
-           <td>{train[i].expectedArrival}</td>
-           <td>{train[i].trainType}</td>
-           <td>{train[i].direction}</td>
-         </tr>
-      )
-    }
-
-    console.log(trainInfo)
+  getCurrentTime() {
+    const today = new Date();
+    const date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    const timezone = today.getTimezoneOffset();
+      return `${date} ${time}  (GMT -${timezone/60})`;
   }
+
 
   render() {
     // Render nothing if the "show" prop is false
@@ -80,29 +65,81 @@ class Modal extends React.Component {
       color: '#FEFEFE'
     }
 
+    const southboundStyle = {
+      marginTop: "24px"
+    }
+
     return (
 
       <div className="backdrop" style={backdropStyle}>
         <div className="modal" style={modalStyle}>
           {this.props.children}
           <div id="modalContent">
-            <p>Station Name: {this.props.content.name}</p>
-            <p>Address: {this.props.content.address}</p>
-            <p>City: {this.props.content.city}</p>
-            <p>Country: {this.props.content.country}</p>
-            <p>Time of Query: {this.props.trainInfo.currentTime}</p>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Origin</th>
-                    <th>Destination</th>
-                    <th>Arriving</th>
-                    <th>Train Type</th>
-                    <th>Direction</th>
-                  </tr>
-                  { trainInfo ? trainInfo : <tr><td>Loading...</td></tr>}
-                </tbody>
-              </table>
+            <p>Station Name: <span className="grey">{this.props.content.name}</span></p>
+            <p>Address: <span className="grey">{this.props.content.address}</span></p>
+            <p>City: <span className="grey">{this.props.content.city}</span></p>
+            <p>Country: <span className="grey">{this.props.content.country}</span></p>
+            <p>Time of Query: <span className="grey">{this.getCurrentTime()}</span></p>
+            { this.props.trainInfo.length > 0 ?
+              <div>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th colSpan="5">Northbound</th>
+                    </tr>
+                    <tr>
+                      <th>Origin</th>
+                      <th>Destination</th>
+                      <th>Due In</th>
+                      <th>Train Type</th>
+                      <th>Direction</th>
+                    </tr>
+                    {
+                      this.props.trainInfo.map( train => {
+                        if (train.direction === "Northbound") {
+                          return train =
+                          <tr key={Math.random(5090897439)}>
+                             <td>{train.Origin}</td>
+                             <td>{train.Destination}</td>
+                             <td>{train.expectedArrival} min</td>
+                             <td>{train.trainType}</td>
+                             <td>{train.direction}</td>
+                           </tr>
+                        }
+                       })
+                    }
+                  </tbody>
+                </table>
+                <table style={southboundStyle}>
+                  <tbody>
+                    <tr>
+                      <th colSpan="5">SouthBound</th>
+                    </tr>
+                    <tr>
+                      <th>Origin</th>
+                      <th>Destination</th>
+                      <th>Due In</th>
+                      <th>Train Type</th>
+                      <th>Direction</th>
+                    </tr>
+                    {
+                      this.props.trainInfo.map( train => {
+                        if (train.direction === "Southbound") {
+                          return train =
+                          <tr key={Math.random(5090897439)}>
+                             <td>{train.Origin}</td>
+                             <td>{train.Destination}</td>
+                             <td>{train.expectedArrival} min</td>
+                             <td>{train.trainType}</td>
+                             <td>{train.direction}</td>
+                           </tr>
+                        }
+                       })
+                    }
+                  </tbody>
+                </table>
+              </div>
+              : <div>Loading...</div> }
           </div>
 
           <div className="footer">

@@ -13,7 +13,7 @@ let showingPlaces, modalContent, numberOfTrains
 
 window.gm_authFailure = () => {
   const mapContainer = document.querySelector('#map-container');
-  mapContainer.innerHTML = `<h3 style="padding: 24px;">Error Loading Map - Bad Auth Token</h3>`;
+  mapContainer.innerHTML = `<h3 style="padding: 24px;">Google Maps Error - Bad Auth Token</h3>`;
 }
 
 class App extends Component {
@@ -45,6 +45,7 @@ class App extends Component {
     .then(res => res.json())
     .then(data => {
       const venues = data.response.venues;
+      console.log(venues)
       venues.map( venue => (
         venue.defaultAnimation = null,
         venue.isVisible = true
@@ -57,17 +58,20 @@ class App extends Component {
   }
 
   getTrains(marker) {
-    let header = new Headers({
-      'Access-Control-Allow-Origin':'localhost:3000',
-      'Content-Type': "text/xml; charset=utf-8"
-    });
-    let sentData={
-        mode: 'cors',
-        header: header,
-    };
+    // let header = new Headers({
+    //   'Access-Control-Allow-Origin':'localhost:3000',
+    //   'Content-Type': "text/xml; charset=utf-8"
+    // });
+    // let sentData={
+    //     mode: 'cors',
+    //     header: header,
+    // };
+    this.setState({trainInfo: []});
+
+    let stationName = marker.name.split(' ')[0];
 
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
-    const url = "http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML?StationDesc="+marker.location.city; // site that doesn’t send Access-Control-*
+    const url = `http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML?StationDesc=${stationName}&numMins=30`; // site that doesn’t send Access-Control-*
     fetch(proxyurl + url)
     .then(response => response.text())
     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
@@ -82,21 +86,11 @@ class App extends Component {
           "currentTime": data.getElementsByTagName("Querytime")[i].childNodes[0].nodeValue,
           "Origin": data.getElementsByTagName("Origin")[i].childNodes[0].nodeValue,
           "Destination": data.getElementsByTagName("Destination")[i].childNodes[0].nodeValue,
-          "expectedArrival": data.getElementsByTagName("Exparrival")[i].childNodes[0].nodeValue,
+          "expectedArrival": data.getElementsByTagName("Duein")[i].childNodes[0].nodeValue,
           "direction": data.getElementsByTagName("Direction")[i].childNodes[0].nodeValue,
           "trainType": data.getElementsByTagName("Traintype")[i].childNodes[0].nodeValue
         }
         this.setState({trainInfo})
-        // this.setState({
-        //   trainInfo: [{
-        //     "currentTime": data.getElementsByTagName("Querytime")[i].childNodes[i].nodeValue,
-        //     "Origin": data.getElementsByTagName("Origin")[i].childNodes[i].nodeValue,
-        //     "Destination": data.getElementsByTagName("Destination")[i].childNodes[i].nodeValue,
-        //     "expectedArrival": data.getElementsByTagName("Exparrival")[i].childNodes[i].nodeValue,
-        //     "direction": data.getElementsByTagName("Direction")[i].childNodes[i].nodeValue,
-        //     "trainType": data.getElementsByTagName("Traintype")[i].childNodes[i].nodeValue
-        //   }]
-        // })
       }
       })
     .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
@@ -181,7 +175,7 @@ class App extends Component {
             initialCenter={{lat: 53.322299, lng: -6.142332}}
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
             zoom={this.state.zoom}>
-            {this.state.filteredPlaces.map((marker, index) => (
+            {this.state.filteredPlaces.map( (marker, index) => (
               marker.isVisible ?
                 <Marker
                   key={marker.id}
