@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+let trainInfo = []
+
 class Modal extends React.Component {
+
+  state = {
+    trainInfo: this.props.trainInfo
+  }
 
   componentDidMount() {
     // handles the closing of the modal on Enter or Escape for better UX
@@ -18,6 +24,25 @@ class Modal extends React.Component {
       var closeBtn = this.refs.closeBtn
       closeBtn.focus()
     }
+    this.renderTrainInfo()
+  }
+
+  renderTrainInfo() {
+    console.log(this.props.trainInfo.length)
+    const train = this.props.trainInfo;
+    for ( let i = 0 ; i < this.props.trainInfo.length ; i++) {
+      trainInfo.push(
+        <tr key={train[i].trainInfo}>
+           <td>{train[i].Origin}</td>
+           <td>{train[i].Destination}</td>
+           <td>{train[i].expectedArrival}</td>
+           <td>{train[i].trainType}</td>
+           <td>{train[i].direction}</td>
+         </tr>
+      )
+    }
+
+    console.log(trainInfo)
   }
 
   render() {
@@ -65,6 +90,19 @@ class Modal extends React.Component {
             <p>Address: {this.props.content.address}</p>
             <p>City: {this.props.content.city}</p>
             <p>Country: {this.props.content.country}</p>
+            <p>Time of Query: {this.props.trainInfo.currentTime}</p>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Arriving</th>
+                    <th>Train Type</th>
+                    <th>Direction</th>
+                  </tr>
+                  { trainInfo ? trainInfo : <tr><td>Loading...</td></tr>}
+                </tbody>
+              </table>
           </div>
 
           <div className="footer">

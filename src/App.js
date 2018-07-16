@@ -9,16 +9,12 @@ import propTypes from 'prop-types';
 // import child component
 import List from './List';
 
-let showingPlaces, modalContent
+let showingPlaces, modalContent, numberOfTrains
+
 window.gm_authFailure = () => {
   const mapContainer = document.querySelector('#map-container');
   mapContainer.innerHTML = `<h3 style="padding: 24px;">Error Loading Map - Bad Auth Token</h3>`;
 }
-
-window.gm_authFailure = function() {
-    const mapContainer = document.querySelector('#map-container');
-    mapContainer.innerHTML = `<h3 style="padding: 20px">Error Loading Map Content</h3>`
-};
 
 class App extends Component {
   constructor(props) {
@@ -30,6 +26,7 @@ class App extends Component {
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
       isOpen: false,
+      trainInfo: [],
       error: ''
     }
 
@@ -59,6 +56,52 @@ class App extends Component {
     })
   }
 
+  getTrains(marker) {
+    let header = new Headers({
+      'Access-Control-Allow-Origin':'localhost:3000',
+      'Content-Type': "text/xml; charset=utf-8"
+    });
+    let sentData={
+        mode: 'cors',
+        header: header,
+    };
+
+    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    const url = "http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML?StationDesc="+marker.location.city; // site that doesn’t send Access-Control-*
+    fetch(proxyurl + url)
+    .then(response => response.text())
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(data => {
+      console.log(data)
+      if (data.childNodes[0].children.length > 0)
+          numberOfTrains = data.childNodes[0].children.length;
+          let trainInfo = []
+      for (let i = 0; i < numberOfTrains ; i++) {
+        trainInfo[i] = {
+          "trainId": data.getElementsByTagName("Traincode")[i].childNodes[0].nodeValue,
+          "currentTime": data.getElementsByTagName("Querytime")[i].childNodes[0].nodeValue,
+          "Origin": data.getElementsByTagName("Origin")[i].childNodes[0].nodeValue,
+          "Destination": data.getElementsByTagName("Destination")[i].childNodes[0].nodeValue,
+          "expectedArrival": data.getElementsByTagName("Exparrival")[i].childNodes[0].nodeValue,
+          "direction": data.getElementsByTagName("Direction")[i].childNodes[0].nodeValue,
+          "trainType": data.getElementsByTagName("Traintype")[i].childNodes[0].nodeValue
+        }
+        this.setState({trainInfo})
+        // this.setState({
+        //   trainInfo: [{
+        //     "currentTime": data.getElementsByTagName("Querytime")[i].childNodes[i].nodeValue,
+        //     "Origin": data.getElementsByTagName("Origin")[i].childNodes[i].nodeValue,
+        //     "Destination": data.getElementsByTagName("Destination")[i].childNodes[i].nodeValue,
+        //     "expectedArrival": data.getElementsByTagName("Exparrival")[i].childNodes[i].nodeValue,
+        //     "direction": data.getElementsByTagName("Direction")[i].childNodes[i].nodeValue,
+        //     "trainType": data.getElementsByTagName("Traintype")[i].childNodes[i].nodeValue
+        //   }]
+        // })
+      }
+      })
+    .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
+  }
+
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
   updateQuery = (e) => {
     const query = e;
@@ -82,6 +125,7 @@ class App extends Component {
     this.setState({isOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
     this.state.filteredPlaces.map( marker => marker.isVisible = true)
     this.setState({ filteredPlaces: showingPlaces })
+    console.log(this.state.trainInfo)
   }
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
@@ -91,15 +135,19 @@ class App extends Component {
         marker.isVisible = false;
         marker.defaultAnimation = null;
       } else {
+        console.log(marker)
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
         modalContent = {
           name: marker.name,
           address: marker.location.address,
           city: marker.location.city,
+          trainOrigin: this.state.trainInfo.Origin,
+          trainDest: this.state.trainInfo.Destination,
           country: marker.location.country
         }
-        this.openModal(marker)
+        this.openModal(marker);
+        this.getTrains(marker);
       }
     })
   }
@@ -151,6 +199,7 @@ class App extends Component {
           <Modal show={this.state.isOpen}
             onClose={this.closeModal}
             content={modalContent}
+            trainInfo={this.state.trainInfo}
             isOpen={this.state.isOpen}
             />
       </main>
