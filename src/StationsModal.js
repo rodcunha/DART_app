@@ -54,6 +54,7 @@ class Modal extends React.Component {
       maxWidth: 500,
       minHeight: 'auto',
       margin: '0 auto',
+      overflow: 'visible',
       padding: 30
     };
 
