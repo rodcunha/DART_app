@@ -90,8 +90,7 @@
   background-color: #222;
   color: #f3d19c;
   border-radius: 10;
-  max-width: 320;
-  right: 10%;
+  max-width: 480px;
   min-height: auto;
   max-height: 63vh;
   margin: 0 auto;
@@ -152,6 +151,10 @@ button {
 /* Responsive Styles */
 
 @media screen and (max-width: 1024px) {
+  .modal {
+    margin-right: 5vw;
+    float: right;
+  }
   #list-container {
     width: 35vw;
   }
@@ -167,6 +170,12 @@ button {
     margin-top: 0px;
     font-size: 1.2em;
     text-align: center;
+  }
+
+  .modal {
+    max-width: 90vw;
+    margin: 0 auto;
+    float: none;
   }
 
   #list-container {

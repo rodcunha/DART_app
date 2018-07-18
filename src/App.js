@@ -33,6 +33,7 @@ class App extends Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.onListClick = this.onListClick.bind(this);
+    this.onMapClicked = this.onMapClicked.bind(this);
   }
 
   componentDidMount() {
@@ -41,7 +42,7 @@ class App extends Component {
 
   // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
   getVenues() {
-    fetch("https://api.foursquare.com/v2/venues/search?ll=53.322299,-6.142332&categoryId=4bf58dd8d48988d129951735&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629")
+    fetch(`https://api.foursquare.com/v2/venues/search?ll=${this.state.center.lat},${this.state.center.lng}&categoryId=4bf58dd8d48988d129951735&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629`)
     .then(res => res.json())
     .then(data => {
       const venues = data.response.venues;
@@ -110,6 +111,19 @@ class App extends Component {
     } else {
       this.setState({ query: '', filteredPlaces: this.state.venues })
     }
+  }
+
+  onMapClicked(mapProps, map) {
+    //this.centerAroundCurrentLocation = true
+  	console.log(map.center.lat());
+  	console.log(map.center.lng());
+    this.setState({
+      center: {
+        lat: map.center.lat(),
+        lng: map.center.lng()
+      }
+    })
+    this.getVenues();
   }
 
   // opens the modal and executes the function to add the data from the marker selected
@@ -256,9 +270,11 @@ class App extends Component {
           <Map
             google={this.props.google}
             styles={mapStyles.styles}
-            initialCenter={{lat: 53.322299, lng: -6.142332}}
+            initialCenter={{lat: this.state.center.lat, lng: this.state.center.lng}}
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
-            zoom={this.state.zoom}>
+            zoom={this.state.zoom}
+            onDragend={this.onMapClicked}
+            >
             {this.state.filteredPlaces.map( (marker, index) => (
               marker.isVisible ?
                 <Marker
