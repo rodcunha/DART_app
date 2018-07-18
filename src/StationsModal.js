@@ -44,20 +44,7 @@ class Modal extends React.Component {
       left: 0,
       right: 0,
       backgroundColor: 'rgba(0,0,0,0.4)',
-      padding: 50
-    };
-
-    // The modal "window"
-    const modalStyle = {
-      backgroundColor: '#333',
-      color: '#f3d19c',
-      borderRadius: 5,
-      maxWidth: 500,
-      minHeight: 'auto',
-      margin: '0 auto',
-      overflow: 'visible',
-      border: '1px solid #f3d19c',
-      padding: 30
+      padding: 10
     };
 
     const southboundStyle = {
@@ -67,7 +54,7 @@ class Modal extends React.Component {
     return (
 
       <div className="backdrop" style={backdropStyle}>
-        <div className="modal" style={modalStyle}>
+        <div className="modal">
           {this.props.children}
           <div id="modalContent">
             <p>Station Name: <span className="grey">{this.props.content.name}</span></p>
@@ -87,18 +74,16 @@ class Modal extends React.Component {
                       <th>Destination</th>
                       <th>Due In</th>
                       <th>Train Type</th>
-                      <th>Direction</th>
                     </tr>
                     {
                       this.props.trainInfo.map( train => {
                         if (train.direction === "Northbound") {
                           return train =
                           <tr key={Math.random(5090897439)}>
-                             <td>{train.Origin}</td>
+                             <td style={{background: '#555'}}>{train.Origin}</td>
                              <td>{train.Destination}</td>
-                             <td>{train.expectedArrival} min</td>
+                             <td style={{background: '#555'}}>{train.expectedArrival} min</td>
                              <td>{train.trainType}</td>
-                             <td>{train.direction}</td>
                            </tr>
                         }
                        })
@@ -115,18 +100,16 @@ class Modal extends React.Component {
                       <th>Destination</th>
                       <th>Due In</th>
                       <th>Train Type</th>
-                      <th>Direction</th>
                     </tr>
                     {
                       this.props.trainInfo.map( train => {
                         if (train.direction === "Southbound") {
                           return train =
                           <tr key={Math.random(5090897439)}>
-                             <td>{train.Origin}</td>
+                             <td style={{background: '#555'}}>{train.Origin}</td>
                              <td>{train.Destination}</td>
-                             <td>{train.expectedArrival} min</td>
+                             <td style={{background: '#555'}}>{train.expectedArrival} min</td>
                              <td>{train.trainType}</td>
-                             <td>{train.direction}</td>
                            </tr>
                         }
                        })
@@ -138,7 +121,7 @@ class Modal extends React.Component {
           </div>
 
           <div className="footer">
-            <button id="close" ref="closeBtn" onClick={this.props.onClose}>
+            <button id="close" ref="closeBtn" onClick={this.props.onClose} style={{float: 'right'}}>
               Close
             </button>
           </div>

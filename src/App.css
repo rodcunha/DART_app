@@ -47,14 +47,15 @@
 
 .list--result {
   background: #333;
-  border-left: 5px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
   color: #f3d19c;
   margin: 0;
   overflow: hidden;
   padding: 20px 5px;
   position: relative;
   width: auto;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #f3d19c;
 }
 
 .list--result:hover {
@@ -80,10 +81,23 @@
 
 
 #modalContent p {
-  font-size: 1
-  em;
+  font-size: 1em;
   color: #f3d19c;
   font-weight: 600;
+}
+
+.modal {
+  background-color: #222;
+  color: #f3d19c;
+  border-radius: 10;
+  max-width: 320;
+  right: 10%;
+  min-height: auto;
+  max-height: 63vh;
+  margin: 0 auto;
+  overflow: scroll;
+  border: 1px solid #f3d19c;
+  padding: 16px;
 }
 
 .grey {
@@ -94,10 +108,12 @@
 /* Table Styles */
 
 table {
-  width: 100%;
-  border: solid 1px #a9a9a9;
+  max-width: 100%;
+  border: none;
   margin: 0;
   padding:0;
+  border-radius: 5px;
+  border-spacing: 1px;
 }
 
 tr {
@@ -108,9 +124,9 @@ tr {
 
 th, td {
   font-size: 0.8em;
-  padding: 2px;
+  padding: 4px 2px;
   margin: 0;
-  border: 1px solid #a9a9a9;
+  border: none;
 }
 
 th {
@@ -146,15 +162,28 @@ button {
 }
 
 @media screen and (max-width: 514px) {
+  h2 {
+    margin: 8px;
+    margin-top: 0px;
+    font-size: 1.2em;
+    text-align: center;
+  }
+
   #list-container {
     width: 100vw;
-    height: 40vh;
+    height: 29vh;
     bottom: 0;
     overflow: scroll;
+    border-top: 1px solid #f3d19c;
   }
 
   #map-container {
-    width: 100vw;
-    height: 59vh;
+    width: 105vw;
+    height: 69vh;
+    transform: translateX(5%)
+  }
+
+  #modalContent p {
+    font-size: 0.8em;
   }
 }

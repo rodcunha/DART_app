@@ -25,7 +25,7 @@ export default class List extends Component {
           ))}
         </ul>
         <div id="onError">{onError}</div>
-        <div>Results by <a href="https://foursquare.com/" style={linkStyle} target="_blank" rel="noopener noreferrer">FourSquare API</a></div>
+        <div>Results by <a href="https://foursquare.com/" style={linkStyle} target="_blank" rel="noopener noreferrer">FourSquare API</a> & <a href="https://www.programmableweb.com/api/irish-rail-realtime" style={linkStyle}>Irish Rail API</a></div>
       </div>
     )
   }

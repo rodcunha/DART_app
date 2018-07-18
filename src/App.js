@@ -73,7 +73,7 @@ class App extends Component {
     }
 
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
-    const url = `http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML?StationDesc=${stationName}&numMins=30`; // site that doesn’t send Access-Control-*
+    const url = `http://api.irishrail.ie/realtime/realtime.asmx/getStationDataByNameXML_withNumMins?StationDesc=${stationName}&NumMins=30`; // site that doesn’t send Access-Control-*
     fetch(proxyurl + url)
     .then(response => response.text())
     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
