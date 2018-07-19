@@ -9,7 +9,7 @@ import propTypes from 'prop-types';
 // import child component
 import List from './List';
 
-let showingPlaces, modalContent, numberOfTrains, stationName
+let showingPlaces, modalContent, numberOfTrains, stationName, trainSuccess
 
 window.gm_authFailure = () => {
   const mapContainer = document.querySelector('#map-container');
@@ -27,6 +27,7 @@ class App extends Component {
       venues: [],   // Venues from the foursquare API
       isOpen: false,
       trainInfo: [],
+      status: '',
       error: ''
     }
 
@@ -80,7 +81,8 @@ class App extends Component {
     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
     .then(data => {
       console.log(data)
-      if (data.childNodes[0].children.length > 0)
+      if (data.childNodes[0].children.length > 0)  {
+          trainSuccess = true;
           numberOfTrains = data.childNodes[0].children.length;
           let trainInfo = []
       for (let i = 0; i < numberOfTrains ; i++) {
@@ -95,8 +97,15 @@ class App extends Component {
         }
         this.setState({trainInfo})
       }
+    } else {
+      const status = 'there are no trains';
+      this.setState({status})
+    }
       })
-    .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
+    .catch( () => {
+      this.setState({ status : "Error loading the Irish Rail API at " + url + ". "});
+        console.log(this.state.status);
+    })
   }
 
   /* this function updates the state of the query and calls other functions when this updates to be rendered */
@@ -132,10 +141,9 @@ class App extends Component {
   }
 
   closeModal() {
-    this.setState({isOpen: false, center: {lat: 53.322299, lng: -6.142332}, zoom: 11, filteredPlaces: this.state.venues });
+    this.setState({isOpen: false, zoom: 11, filteredPlaces: this.state.venues });
     this.state.filteredPlaces.map( marker => marker.isVisible = true)
     this.setState({ filteredPlaces: showingPlaces })
-    console.log(this.state.trainInfo)
   }
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
@@ -144,7 +152,8 @@ class App extends Component {
       if ( marker.id !== id ) {
         marker.isVisible = false;
         marker.defaultAnimation = null;
-      } else {
+      }  else {
+        this.setState({ status : "Loading..." })
         console.log(marker)
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
@@ -154,7 +163,8 @@ class App extends Component {
           city: marker.location.city,
           trainOrigin: this.state.trainInfo.Origin,
           trainDest: this.state.trainInfo.Destination,
-          country: marker.location.country
+          country: marker.location.country,
+          status: this.state.status
         }
         this.openModal(marker);
         this.getTrains(marker);
@@ -270,7 +280,6 @@ class App extends Component {
           <Map
             google={this.props.google}
             styles={mapStyles.styles}
-            initialCenter={{lat: this.state.center.lat, lng: this.state.center.lng}}
             center={{lat: this.state.center.lat, lng: this.state.center.lng}}
             zoom={this.state.zoom}
             onDragend={this.onMapClicked}

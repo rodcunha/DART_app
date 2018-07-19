@@ -117,7 +117,7 @@ class Modal extends React.Component {
                   </tbody>
                 </table>
               </div>
-              : <div>Loading...</div> }
+              : <div>{this.props.content.status}</div> }
           </div>
 
           <div className="footer">
@@ -134,7 +134,8 @@ class Modal extends React.Component {
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool,
-  children: PropTypes.node
+  children: PropTypes.node,
+  content: PropTypes.obj
 };
 
 export default Modal;
