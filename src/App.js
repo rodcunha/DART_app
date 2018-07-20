@@ -323,7 +323,15 @@ App.propTypes = {
   google: propTypes.object.isRequired
 }
 
+const LoadingContainer = (props) => (
+  <div style={{background: '#333', color: '#d59563', height: '100vh', width: '100vw'}}>
+    <h2 style={{display: 'block', paddingTop: '40vh', textAlign: 'center'}}>DART Train App loading...</h2>
+    <h4 style={{textAlign: 'center', paddingTop: '20px'}}>Please Wait</h4>
+  </div>
+)
+
 // Here we are exporting the App component WITH the GoogleApiWrapper. Pass it down with an object containing your API key
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyAW9FSO3dZau3RhzD1-rHFrVxWyEveq5Os',
+  LoadingContainer: LoadingContainer
 })(App)

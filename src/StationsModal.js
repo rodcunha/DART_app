@@ -81,9 +81,9 @@ class Modal extends React.Component {
                           return train =
                           <tr key={Math.random(5090897439)}>
                              <td style={{background: '#555'}}>{train.Origin}</td>
-                             <td>{train.Destination}</td>
+                             <td style={{background: '#3a3a3a'}}>{train.Destination}</td>
                              <td style={{background: '#555'}}>{train.expectedArrival} min</td>
-                             <td>{train.trainType}</td>
+                             <td style={{background: '#3a3a3a'}}>{train.trainType}</td>
                            </tr>
                         }
                        })
@@ -107,9 +107,9 @@ class Modal extends React.Component {
                           return train =
                           <tr key={Math.random(5090897439)}>
                              <td style={{background: '#555'}}>{train.Origin}</td>
-                             <td>{train.Destination}</td>
+                             <td style={{background: '#3a3a3a'}}>{train.Destination}</td>
                              <td style={{background: '#555'}}>{train.expectedArrival} min</td>
-                             <td>{train.trainType}</td>
+                             <td style={{background: '#3a3a3a'}}>{train.trainType}</td>
                            </tr>
                         }
                        })
