@@ -1,31 +1,32 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+  background-color: #2f3948;
+  height: 30px;
+  width: 79vw;
+  padding: 10px;
+  color: #FAFAFA;
+  position: absolute;
+  z-index: 10;
+  top: 0px
 }
 
-.App-title {
-  font-size: 1.5em;
+.Selection-box {
+  background-color: #111;
+  color: #f3d19c;
+  padding: 8px 24px;
+  height: 30px;
+  font-size: 1.1em;
+  position: absolute;
+  right: 10%;
+  z-index: 15;
 }
 
-.App-intro {
-  font-size: large;
+h2 {
+  text-align: center;
+  -webkit-margin-before: 0.33em;
+  -webkit-margin-after: 0.83em;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+
 
 /* List Styles */
 
@@ -56,6 +57,7 @@
   position: relative;
   width: auto;
   border-bottom: 1px solid #f3d19c;
+  z-index: 101;
 }
 
 .list--result:hover {
@@ -77,6 +79,11 @@
   height: 100vh;
   position: absolute;
   right: 0;
+}
+
+.Map {
+  max-height: 95vh;
+  margin-top: 5.1vh;
 }
 
 
@@ -155,11 +162,12 @@ button {
     margin-right: 5vw;
     float: right;
   }
+
   #list-container {
     width: 35vw;
   }
 
-  #map-container {
+  #map-container, .App-header {
     width: 65vw;
   }
 }
@@ -176,6 +184,10 @@ button {
     max-width: 90vw;
     margin: 0 auto;
     float: none;
+  }
+
+  .App-header {
+    width: 100vw;
   }
 
   #list-container {

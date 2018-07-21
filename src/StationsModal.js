@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Modal extends React.Component {
+  state = {
+    status: '',
+  }
 
   componentDidMount() {
     // handles the closing of the modal on Enter or Escape for better UX
@@ -26,9 +29,8 @@ class Modal extends React.Component {
     const date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     const timezone = today.getTimezoneOffset();
-      return `${date} ${time}  (GMT -${timezone/60})`;
+      return `${date} ${time}  (GMT -${timezone/60+1})`;
   }
-
 
   render() {
     // Render nothing if the "show" prop is false
@@ -43,7 +45,7 @@ class Modal extends React.Component {
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: 'rgba(0,0,0,0.4)',
+      backgroundColor: 'rgba(0,0,0,0.5)',
       padding: 10
     };
 
@@ -52,7 +54,6 @@ class Modal extends React.Component {
     }
 
     return (
-
       <div className="backdrop" style={backdropStyle}>
         <div className="modal">
           {this.props.children}
@@ -75,7 +76,7 @@ class Modal extends React.Component {
                       <th>Due In</th>
                       <th>Train Type</th>
                     </tr>
-                    {
+                    { (!this.props.trainInfo) ? console.log('ERROR') :
                       this.props.trainInfo.map( train => {
                         if (train.direction === "Northbound") {
                           return train =
@@ -135,7 +136,7 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool,
   children: PropTypes.node,
-  content: PropTypes.obj
+  content: PropTypes.object
 };
 
 export default Modal;

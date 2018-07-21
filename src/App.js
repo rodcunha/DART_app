@@ -9,7 +9,7 @@ import propTypes from 'prop-types';
 // import child component
 import List from './List';
 
-let showingPlaces, modalContent, numberOfTrains, stationName, trainSuccess
+let showingPlaces, modalContent, numberOfTrains, stationName
 
 window.gm_authFailure = () => {
   const mapContainer = document.querySelector('#map-container');
@@ -25,6 +25,7 @@ class App extends Component {
       zoom: 11,
       filteredPlaces: [], // Places after they have been filtered by the input
       venues: [],   // Venues from the foursquare API
+      selectedService: '4bf58dd8d48988d129951735',
       isOpen: false,
       trainInfo: [],
       status: '',
@@ -35,6 +36,7 @@ class App extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.onListClick = this.onListClick.bind(this);
     this.onMapClicked = this.onMapClicked.bind(this);
+    this.checkService = this.checkService.bind(this);
   }
 
   componentDidMount() {
@@ -43,7 +45,7 @@ class App extends Component {
 
   // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
   getVenues() {
-    fetch(`https://api.foursquare.com/v2/venues/search?ll=${this.state.center.lat},${this.state.center.lng}&categoryId=4bf58dd8d48988d129951735&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629`)
+    fetch(`https://api.foursquare.com/v2/venues/search?ll=${this.state.center.lat},${this.state.center.lng}&categoryId=${this.state.selectedService}&client_id=KDUVRP5FMXE34OLNDSZCBZREKUT4VBNRXMKLZXSDTOGTV5LE&client_secret=EUFKEZEUUIA2XX2AKUJXV3PYPIZFBRWXDJTBIPFDSGQPJSQO&v=20180629`)
     .then(res => res.json())
     .then(data => {
       const venues = data.response.venues;
@@ -55,7 +57,7 @@ class App extends Component {
       this.setState({venues})
     })
     .catch( err => {
-      this.setState({ error: 'There has been an error loading the Foursquare API, no places are available.', err })
+      this.setState({ error: 'There has been an error loading the Foursquare API, no places are available.', err})
     })
   }
 
@@ -82,7 +84,6 @@ class App extends Component {
     .then(data => {
       console.log(data)
       if (data.childNodes[0].children.length > 0)  {
-          trainSuccess = true;
           numberOfTrains = data.childNodes[0].children.length;
           let trainInfo = []
       for (let i = 0; i < numberOfTrains ; i++) {
@@ -148,12 +149,13 @@ class App extends Component {
 
 // this function is called by either a marker click or a list click and checked if the ids match and reveals the marker.
   checkSelectedMarker(id) {
+    this.setState({ status : "Loading..." });
     this.state.filteredPlaces.filter( marker => {
       if ( marker.id !== id ) {
         marker.isVisible = false;
         marker.defaultAnimation = null;
+        //this.setState({status: 'TEST'})
       }  else {
-        this.setState({ status : "Loading..." })
         console.log(marker)
         marker.isVisible = true;
         marker.defaultAnimation = this.props.google.maps.Animation.BOUNCE;
@@ -178,6 +180,38 @@ class App extends Component {
 
   onListClick(id) {
     this.checkSelectedMarker(id);
+  }
+
+  checkService(e) {
+    console.log(e.target.value)
+    const selectedService = e.target.value;
+
+    switch(selectedService) {
+    case 'trainStations':
+        this.setState({ selectedService: '4bf58dd8d48988d129951735'});
+        this.getVenues();
+        this.setState({filteredPlaces: this.state.venues});
+        break;
+    case 'doctors':
+        this.setState({ selectedService: '4bf58dd8d48988d177941735'});
+        this.getVenues();
+        this.setState({filteredPlaces: this.state.venues});
+        break;
+    case 'postOffice':
+        this.setState({ selectedService: '4bf58dd8d48988d172941735'});
+        this.getVenues();
+        this.setState({filteredPlaces: this.state.venues});
+        break;
+    case 'police':
+        this.setState({ selectedService: '4bf58dd8d48988d12e941735'});
+        this.getVenues();
+        this.setState({filteredPlaces: this.state.venues});
+        break;
+    default:
+        this.setState({ selectedService: '4bf58dd8d48988d129951735'});
+        this.getVenues();
+        this.setState({filteredPlaces: this.state.venues});
+}
   }
 
   render() {
@@ -277,27 +311,36 @@ class App extends Component {
     return (
       <main>
         <div id="map-container" ref="map">
-          <Map
-            google={this.props.google}
-            styles={mapStyles.styles}
-            center={{lat: this.state.center.lat, lng: this.state.center.lng}}
-            zoom={this.state.zoom}
-            onDragend={this.onMapClicked}
-            >
-            {this.state.filteredPlaces.map( (marker, index) => (
-              marker.isVisible ?
-                <Marker
-                  key={marker.id}
-                  animation={marker.defaultAnimation}
-                  name={marker.name}
-                  picture={marker.categories[0].icon.prefix+marker.categories[0].icon.suffix}
-                  address={marker.location.address}
-                  position={{lat: marker.location.lat, lng: marker.location.lng}}
-                  onClick={e => { this.onMarkerClick(marker.id)}}
-                /> : null
-            ))}
-          </Map>
+          <div className="App-header">
+            <select className="Selection-box" onChange={this.checkService} tabIndex="1">
+              <option selected value="trainStations">Train Stations</option>
+              <option value="doctors">Doctor</option>
+              <option value="postOffice">Post Office</option>
+              <option value="police">Police</option>
+            </select>
+          </div>
+            <Map
+              google={this.props.google}
+              styles={mapStyles.styles}
+              center={{lat: this.state.center.lat, lng: this.state.center.lng}}
+              zoom={this.state.zoom}
+              onDragend={this.onMapClicked}
+              >
+              {this.state.filteredPlaces.map( (marker, index) => (
+                marker.isVisible ?
+                  <Marker
+                    key={marker.id}
+                    animation={marker.defaultAnimation}
+                    name={marker.name}
+                    picture={marker.categories[0].icon.prefix+marker.categories[0].icon.suffix}
+                    address={marker.location.address}
+                    position={{lat: marker.location.lat, lng: marker.location.lng}}
+                    onClick={e => { this.onMarkerClick(marker.id)}}
+                  /> : null
+              ))}
+            </Map>
         </div>
+        { /* List component */ }
         <List
             query={this.state.query}
             onError={this.state.error}
@@ -306,7 +349,7 @@ class App extends Component {
             filteredResults={showingPlaces}
             updateQuery={this.updateQuery}
         />
-
+      { /* Information Modal */}
         <Modal
             show={this.state.isOpen}
             onClose={this.closeModal}
