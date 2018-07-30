@@ -119,12 +119,11 @@ class Modal extends React.Component {
                 </table>
               </div>
               : <div>{this.props.content.status}</div> }
-          </div>
-
-          <div className="footer">
-            <button id="close" ref="closeBtn" onClick={this.props.onClose} style={{float: 'right'}}>
-              Close
-            </button>
+              <div className="footer">
+                <button id="close" ref="closeBtn" onClick={this.props.onClose} style={{float: 'right'}}>
+                  Close
+                </button>
+              </div>
           </div>
         </div>
       </div>

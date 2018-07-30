@@ -39,8 +39,12 @@ class App extends Component {
     this.checkService = this.checkService.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getVenues(); /* call the getVenues function when the component mounts */
+  }
+
+  componentDidMount() {
+    this.checkService();
   }
 
   // this async function gets the results for the train stations category from the foursquare API and assigns it to the component state
@@ -54,7 +58,8 @@ class App extends Component {
         venue.defaultAnimation = null,
         venue.isVisible = true
       ))
-      this.setState({venues})
+      this.setState({venues});
+      showingPlaces = this.state.venues;
     })
     .catch( err => {
       this.setState({ error: 'There has been an error loading the Foursquare API, no places are available.', err})
@@ -123,6 +128,7 @@ class App extends Component {
     }
   }
 
+  // Returns the map lat/lng when the map is dragged and assigns to the center in state
   onMapClicked(mapProps, map) {
     //this.centerAroundCurrentLocation = true
   	console.log(map.center.lat());
@@ -141,6 +147,7 @@ class App extends Component {
     this.setState({isOpen: true, center: {lat: data.location.lat, lng: data.location.lng}, zoom: 14});
   }
 
+  // Closes the modal and returns the map to its zoom and position
   closeModal() {
     this.setState({isOpen: false, zoom: 11, filteredPlaces: this.state.venues });
     this.state.filteredPlaces.map( marker => marker.isVisible = true)
@@ -182,37 +189,16 @@ class App extends Component {
     this.checkSelectedMarker(id);
   }
 
-  checkService(e) {
-    console.log(e.target.value)
-    const selectedService = e.target.value;
+// This controls the select element for different place categories
+  checkService() {
+    const selectedService = this.refs.selectCategory.value;
+    console.log(selectedService)
+    this.setState({selectedService})
 
-    switch(selectedService) {
-    case 'trainStations':
-        this.setState({ selectedService: '4bf58dd8d48988d129951735'});
-        this.getVenues();
-        this.setState({filteredPlaces: this.state.venues});
-        break;
-    case 'doctors':
-        this.setState({ selectedService: '4bf58dd8d48988d177941735'});
-        this.getVenues();
-        this.setState({filteredPlaces: this.state.venues});
-        break;
-    case 'postOffice':
-        this.setState({ selectedService: '4bf58dd8d48988d172941735'});
-        this.getVenues();
-        this.setState({filteredPlaces: this.state.venues});
-        break;
-    case 'police':
-        this.setState({ selectedService: '4bf58dd8d48988d12e941735'});
-        this.getVenues();
-        this.setState({filteredPlaces: this.state.venues});
-        break;
-    default:
-        this.setState({ selectedService: '4bf58dd8d48988d129951735'});
-        this.getVenues();
-        this.setState({filteredPlaces: this.state.venues});
-}
-  }
+      this.getVenues();
+      console.log(this.state.selectedService)
+      this.setState({filteredPlaces: this.state.venues});
+    }
 
   render() {
     const mapStyles = {
@@ -312,11 +298,11 @@ class App extends Component {
       <main>
         <div id="map-container" ref="map">
           <div className="App-header">
-            <select className="Selection-box" onChange={this.checkService} tabIndex="1">
-              <option selected value="trainStations">Train Stations</option>
-              <option value="doctors">Doctor</option>
-              <option value="postOffice">Post Office</option>
-              <option value="police">Police</option>
+            <select className="Selection-box" ref="selectCategory" onChange={this.checkService} tabIndex="1">
+              <option selected value="4bf58dd8d48988d129951735">Train Stations</option>
+              <option value="4bf58dd8d48988d177941735">Doctor</option>
+              <option value="4bf58dd8d48988d172941735">Post Office</option>
+              <option value="4bf58dd8d48988d12e941735">Police</option>
             </select>
           </div>
             <Map

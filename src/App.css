@@ -96,14 +96,14 @@ h2 {
 .modal {
   background-color: #222;
   color: #f3d19c;
-  border-radius: 10;
+  border-radius: 10px;
   max-width: 480px;
   min-height: auto;
   max-height: 63vh;
-  margin: 0 auto;
-  overflow: scroll;
+  margin: 50px auto;
   border: 1px solid #f3d19c;
   padding: 16px;
+  overflow-y: scroll;
 }
 
 .grey {
@@ -161,6 +161,10 @@ button {
   .modal {
     margin-right: 5vw;
     float: right;
+  }
+
+  .modalContent {
+    overflow: scroll;
   }
 
   #list-container {
